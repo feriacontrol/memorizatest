@@ -8,12 +8,15 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -21,6 +24,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -31,10 +35,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 private val TestBlue = Color(0xFF0969F6)
+private val SuccessGreen = Color(0xFF178A52)
+private val ErrorRed = Color(0xFFC93C3C)
 
 private data class TestQuestion(
     val text: String,
-    val answers: List<String>
+    val answers: List<String>,
+    val correctAnswer: Int
 )
 
 private val sampleQuestions = listOf(
@@ -44,23 +51,44 @@ private val sampleQuestions = listOf(
             "Detenerse antes de la línea de detención.",
             "Continuar si no viene ningún vehículo.",
             "Reducir la velocidad sin detenerse."
-        )
+        ),
+        correctAnswer = 0
     ),
     TestQuestion(
-        text = "¿Qué indica una señal triangular con borde rojo?",
+        text = "¿Qué indica, con carácter general, una señal triangular con borde rojo?",
         answers = listOf(
             "Una obligación.",
             "Una advertencia de peligro.",
-            "Una prohibición."
-        )
+            "Una zona de estacionamiento."
+        ),
+        correctAnswer = 1
     ),
     TestQuestion(
         text = "Antes de realizar un adelantamiento, ¿qué debe comprobar el conductor?",
         answers = listOf(
             "Que puede hacerlo sin peligro.",
-            "Que circula a velocidad máxima.",
-            "Que el vehículo de delante frena."
-        )
+            "Que circula a la velocidad máxima permitida.",
+            "Que el vehículo de delante está frenando."
+        ),
+        correctAnswer = 0
+    ),
+    TestQuestion(
+        text = "¿Es obligatorio utilizar el cinturón de seguridad cuando el vehículo dispone de él?",
+        answers = listOf(
+            "Solo en carretera.",
+            "Sí, con las excepciones previstas legalmente.",
+            "Solo para el conductor."
+        ),
+        correctAnswer = 1
+    ),
+    TestQuestion(
+        text = "Si un conductor está cansado, ¿qué es lo más adecuado?",
+        answers = listOf(
+            "Aumentar la velocidad para llegar antes.",
+            "Abrir la ventanilla y continuar.",
+            "Detenerse en un lugar seguro y descansar."
+        ),
+        correctAnswer = 2
     )
 )
 
@@ -69,9 +97,33 @@ fun TestScreen(
     onBack: () -> Unit
 ) {
     var questionIndex by remember { mutableIntStateOf(0) }
-    var selectedAnswer by remember { mutableStateOf<Int?>(null) }
+    var finished by remember { mutableStateOf(false) }
+
+    val answers = remember {
+        mutableStateListOf<Int?>().apply {
+            repeat(sampleQuestions.size) {
+                add(null)
+            }
+        }
+    }
+
+    if (finished) {
+        ResultScreen(
+            answers = answers,
+            onRepeat = {
+                for (i in answers.indices) {
+                    answers[i] = null
+                }
+                questionIndex = 0
+                finished = false
+            },
+            onBackHome = onBack
+        )
+        return
+    }
 
     val question = sampleQuestions[questionIndex]
+    val selectedAnswer = answers[questionIndex]
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -83,7 +135,9 @@ fun TestScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 20.dp, vertical = 28.dp)
         ) {
-            TextButton(onClick = onBack) {
+            TextButton(
+                onClick = onBack
+            ) {
                 Text(
                     text = "‹ Volver",
                     color = TestBlue
@@ -102,7 +156,7 @@ fun TestScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "Pregunta ${questionIndex + 1} de 30",
+                text = "Pregunta ${questionIndex + 1} de ${sampleQuestions.size}",
                 fontSize = 14.sp,
                 color = Color(0xFF6B7280)
             )
@@ -120,7 +174,10 @@ fun TestScreen(
             ) {
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth((questionIndex + 1) / 30f)
+                        .fillMaxWidth(
+                            (questionIndex + 1).toFloat() /
+                                sampleQuestions.size.toFloat()
+                        )
                         .height(6.dp)
                         .background(
                             TestBlue,
@@ -142,13 +199,12 @@ fun TestScreen(
             Spacer(modifier = Modifier.height(28.dp))
 
             question.answers.forEachIndexed { index, answer ->
-
                 AnswerButton(
                     letter = listOf("A", "B", "C")[index],
                     text = answer,
                     selected = selectedAnswer == index,
                     onClick = {
-                        selectedAnswer = index
+                        answers[questionIndex] = index
                     }
                 )
 
@@ -161,7 +217,8 @@ fun TestScreen(
                 onClick = {
                     if (questionIndex < sampleQuestions.lastIndex) {
                         questionIndex++
-                        selectedAnswer = null
+                    } else {
+                        finished = true
                     }
                 },
                 enabled = selectedAnswer != null,
@@ -175,10 +232,11 @@ fun TestScreen(
                 )
             ) {
                 Text(
-                    text = if (questionIndex < sampleQuestions.lastIndex)
+                    text = if (questionIndex < sampleQuestions.lastIndex) {
                         "Siguiente"
-                    else
-                        "Finalizar prueba",
+                    } else {
+                        "Finalizar test"
+                    },
                     fontSize = 17.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -200,6 +258,148 @@ fun TestScreen(
 }
 
 @Composable
+private fun ResultScreen(
+    answers: List<Int?>,
+    onRepeat: () -> Unit,
+    onBackHome: () -> Unit
+) {
+    val correctAnswers = sampleQuestions.indices.count { index ->
+        answers[index] == sampleQuestions[index].correctAnswer
+    }
+
+    val errors = sampleQuestions.size - correctAnswers
+
+    // En el examen real de 30 preguntas serán como máximo 3 fallos.
+    val passed = if (sampleQuestions.size == 30) {
+        errors <= 3
+    } else {
+        correctAnswers.toFloat() / sampleQuestions.size >= 0.9f
+    }
+
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = Color(0xFFF7F8FA)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 20.dp, vertical = 42.dp)
+        ) {
+            Text(
+                text = "Resultado",
+                fontSize = 30.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF111827)
+            )
+
+            Spacer(modifier = Modifier.height(28.dp))
+
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(24.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor =
+                        if (passed) Color(0xFFEAF8F0)
+                        else Color(0xFFFFEEEE)
+                )
+            ) {
+                Column(
+                    modifier = Modifier.padding(24.dp)
+                ) {
+                    Text(
+                        text = if (passed) "APROBADO" else "SUSPENSO",
+                        fontSize = 28.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = if (passed) SuccessGreen else ErrorRed
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Text(
+                        text = "$correctAnswers de ${sampleQuestions.size} correctas",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF111827)
+                    )
+
+                    Spacer(modifier = Modifier.height(6.dp))
+
+                    Text(
+                        text = "$errors fallos",
+                        fontSize = 16.sp,
+                        color = Color(0xFF6B7280)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(22.dp))
+
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(20.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color.White
+                )
+            ) {
+                Column(
+                    modifier = Modifier.padding(20.dp)
+                ) {
+                    Text(
+                        text = "Prueba técnica",
+                        fontSize = 17.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    Spacer(modifier = Modifier.height(7.dp))
+
+                    Text(
+                        text = "Ahora estamos probando el motor con 5 preguntas. La versión definitiva utilizará tests de 30 preguntas.",
+                        fontSize = 14.sp,
+                        lineHeight = 20.sp,
+                        color = Color(0xFF6B7280)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(28.dp))
+
+            Button(
+                onClick = onRepeat,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(58.dp),
+                shape = RoundedCornerShape(16.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = TestBlue
+                )
+            ) {
+                Text(
+                    text = "Repetir test",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 17.sp
+                )
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            OutlinedButton(
+                onClick = onBackHome,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Text(
+                    text = "Volver al inicio",
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+    }
+}
+
+@Composable
 private fun AnswerButton(
     letter: String,
     text: String,
@@ -210,7 +410,7 @@ private fun AnswerButton(
         onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
-            .height(76.dp),
+            .heightIn(min = 76.dp),
         shape = RoundedCornerShape(18.dp),
         border = BorderStroke(
             width = if (selected) 2.dp else 1.dp,
@@ -226,16 +426,19 @@ private fun AnswerButton(
         )
     ) {
         Text(
-            text = if (selected)
+            text = if (selected) {
                 "✓  $letter   $text"
-            else
-                "$letter   $text",
-            modifier = Modifier.fillMaxWidth(),
+            } else {
+                "$letter   $text"
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
             fontSize = 15.sp,
-            fontWeight = if (selected)
-                FontWeight.Bold
-            else
-                FontWeight.Normal
+            lineHeight = 21.sp,
+            fontWeight =
+                if (selected) FontWeight.Bold
+                else FontWeight.Normal
         )
     }
 }
