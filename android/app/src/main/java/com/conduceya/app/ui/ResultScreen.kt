@@ -24,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.conduceya.app.model.TestQuestion
+import com.conduceya.app.model.ExamConfig
 
 private val ResultBlue = Color(0xFF0969F6)
 private val SuccessGreen = Color(0xFF178A52)
@@ -43,11 +44,7 @@ fun ResultScreen(
 
     val errors = questions.size - correctAnswers
 
-    val passed = if (questions.size == 30) {
-        errors <= 3
-    } else {
-        correctAnswers.toFloat() / questions.size >= 0.9f
-    }
+    val passed = errors <= ExamConfig.MAX_ERRORS
 
     Surface(
         modifier = Modifier.fillMaxSize(),
