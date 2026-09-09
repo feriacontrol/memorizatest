@@ -42,10 +42,19 @@ private val TestBlue = Color(0xFF0969F6)
 
 @Composable
 fun TestScreen(
+    topic: String? = null,
     onBack: () -> Unit
 ) {
-    val questions = remember {
-        QuestionBank.questions
+    val questions = remember(topic) {
+        val source = if (topic == null) {
+            QuestionBank.questions
+        } else {
+            QuestionBank.questions.filter {
+                it.topic == topic
+            }
+        }
+
+        source
             .shuffled()
             .take(ExamConfig.QUESTION_COUNT)
     }
@@ -155,7 +164,7 @@ fun TestScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "Test de examen",
+                text = topic ?: "Test de examen",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold
             )

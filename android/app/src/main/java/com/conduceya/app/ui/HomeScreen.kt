@@ -1,5 +1,6 @@
 package com.conduceya.app.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,7 +27,8 @@ private val ConduceYaBlue = Color(0xFF0969F6)
 
 @Composable
 fun HomeScreen(
-    onStartTest: () -> Unit
+    onStartTest: () -> Unit,
+    onOpenTopics: () -> Unit
 ) {
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -101,28 +103,32 @@ fun HomeScreen(
 
             MenuCard(
                 title = "Tests por temas",
-                subtitle = "Practica lo que más te cuesta"
+                subtitle = "Practica lo que más te cuesta",
+                onClick = onOpenTopics
             )
 
             Spacer(modifier = Modifier.height(12.dp))
 
             MenuCard(
                 title = "Simulación de examen",
-                subtitle = "30 preguntas como en el examen real"
+                subtitle = "30 preguntas como en el examen real",
+                onClick = onStartTest
             )
 
             Spacer(modifier = Modifier.height(12.dp))
 
             MenuCard(
                 title = "Mis fallos",
-                subtitle = "Repasa las preguntas que has fallado"
+                subtitle = "Repasa las preguntas que has fallado",
+                onClick = { }
             )
 
             Spacer(modifier = Modifier.height(12.dp))
 
             MenuCard(
                 title = "Estadísticas",
-                subtitle = "Comprueba tu evolución"
+                subtitle = "Comprueba tu evolución",
+                onClick = { }
             )
         }
     }
@@ -131,10 +137,15 @@ fun HomeScreen(
 @Composable
 private fun MenuCard(
     title: String,
-    subtitle: String
+    subtitle: String,
+    onClick: () -> Unit
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                onClick()
+            },
         shape = RoundedCornerShape(18.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.White
