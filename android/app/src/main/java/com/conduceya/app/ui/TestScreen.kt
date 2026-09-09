@@ -2,6 +2,7 @@ package com.conduceya.app.ui
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -47,10 +47,10 @@ fun TestScreen(
 ) {
     val questions = remember(topic) {
         val source = if (topic == null) {
-            QuestionBank.questions
+            QuestionBank.questions.filter { it.active }
         } else {
             QuestionBank.questions.filter {
-                it.topic == topic
+                it.active && it.topic == topic
             }
         }
 
@@ -62,12 +62,13 @@ fun TestScreen(
     var questionIndex by remember { mutableIntStateOf(0) }
     var finished by remember { mutableStateOf(false) }
     var reviewing by remember { mutableStateOf(false) }
+    var showSummary by remember { mutableStateOf(false) }
 
     var secondsRemaining by remember {
         mutableIntStateOf(ExamConfig.DURATION_SECONDS)
     }
 
-    val answers = remember {
+    val answers = remember(questions) {
         mutableStateListOf<Int?>().apply {
             repeat(questions.size) {
                 add(null)
@@ -83,6 +84,7 @@ fun TestScreen(
 
         if (secondsRemaining <= 0) {
             finished = true
+            showSummary = false
         }
     }
 
@@ -112,9 +114,52 @@ fun TestScreen(
                 questionIndex = 0
                 secondsRemaining = ExamConfig.DURATION_SECONDS
                 finished = false
+                showSummary = false
             },
             onBackHome = onBack
         )
+        return
+    }
+
+    if (showSummary) {
+        ExamSummaryScreen(
+            answers = answers,
+            onBackToExam = {
+                showSummary = false
+            },
+            onGoToQuestion = { index ->
+                questionIndex = index
+                showSummary = false
+            },
+            onSubmit = {
+                showSummary = false
+                finished = true
+            }
+        )
+        return
+    }
+
+    if (questions.isEmpty()) {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = Color(0xFFF7F8FA)
+        ) {
+            Column(
+                modifier = Modifier.padding(24.dp)
+            ) {
+                Text(
+                    text = "No hay preguntas disponibles",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Button(onClick = onBack) {
+                    Text("Volver")
+                }
+            }
+        }
         return
     }
 
@@ -123,6 +168,8 @@ fun TestScreen(
 
     val minutes = secondsRemaining / 60
     val seconds = secondsRemaining % 60
+
+    val answeredCount = answers.count { it != null }
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -169,12 +216,20 @@ fun TestScreen(
                 fontWeight = FontWeight.Bold
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(7.dp))
 
             Text(
                 text = "Pregunta ${questionIndex + 1} de ${questions.size}",
                 fontSize = 14.sp,
                 color = Color(0xFF6B7280)
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Text(
+                text = "$answeredCount de ${questions.size} respondidas",
+                fontSize = 13.sp,
+                color = TestBlue
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -202,7 +257,21 @@ fun TestScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(14.dp))
+
+            TextButton(
+                onClick = {
+                    showSummary = true
+                }
+            ) {
+                Text(
+                    text = "Ver todas las preguntas",
+                    color = TestBlue,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
+            Spacer(modifier = Modifier.height(14.dp))
 
             Text(
                 text = question.text,
@@ -229,35 +298,63 @@ fun TestScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
+            if (questionIndex > 0) {
+                OutlinedButton(
+                    onClick = {
+                        questionIndex--
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(54.dp),
+                    shape = RoundedCornerShape(16.dp)
+                ) {
+                    Text(
+                        text = "Anterior",
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+            }
+
             Button(
                 onClick = {
                     if (questionIndex < questions.lastIndex) {
                         questionIndex++
                     } else {
-                        finished = true
+                        showSummary = true
                     }
                 },
-                enabled = selectedAnswer != null,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(58.dp),
                 shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = TestBlue,
-                    disabledContainerColor = Color(0xFFD1D5DB)
+                    containerColor = TestBlue
                 )
             ) {
                 Text(
-                    text =
-                        if (questionIndex < questions.lastIndex) {
-                            "Siguiente"
-                        } else {
-                            "Finalizar test"
-                        },
+                    text = if (questionIndex < questions.lastIndex) {
+                        "Siguiente"
+                    } else {
+                        "Revisar antes de entregar"
+                    },
                     fontSize = 17.sp,
                     fontWeight = FontWeight.Bold
                 )
             }
+
+            if (selectedAnswer == null) {
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = "Puedes dejar esta pregunta sin responder y volver después.",
+                    fontSize = 13.sp,
+                    color = Color(0xFF6B7280)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(25.dp))
         }
     }
 }
@@ -291,12 +388,11 @@ private fun AnswerButton(
         )
     ) {
         Text(
-            text =
-                if (selected) {
-                    "✓  $letter   $text"
-                } else {
-                    "$letter   $text"
-                },
+            text = if (selected) {
+                "✓  $letter   $text"
+            } else {
+                "$letter   $text"
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 8.dp),
