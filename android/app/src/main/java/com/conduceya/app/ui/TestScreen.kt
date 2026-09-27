@@ -31,10 +31,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.conduceya.app.data.QuestionBank
+import com.conduceya.app.data.MistakesStore
 import com.conduceya.app.model.ExamConfig
 import kotlinx.coroutines.delay
 
@@ -43,14 +45,29 @@ private val TestBlue = Color(0xFF0969F6)
 @Composable
 fun TestScreen(
     topic: String? = null,
+    questionIds: Set<Int>? = null,
     onBack: () -> Unit
 ) {
-    val questions = remember(topic) {
-        val source = if (topic == null) {
-            QuestionBank.questions.filter { it.active }
-        } else {
-            QuestionBank.questions.filter {
-                it.active && it.topic == topic
+    val context = LocalContext.current
+
+    val questions = remember(topic, questionIds) {
+        val source = when {
+            questionIds != null -> {
+                QuestionBank.questions.filter {
+                    it.active && it.id in questionIds
+                }
+            }
+
+            topic != null -> {
+                QuestionBank.questions.filter {
+                    it.active && it.topic == topic
+                }
+            }
+
+            else -> {
+                QuestionBank.questions.filter {
+                    it.active
+                }
             }
         }
 
@@ -63,6 +80,7 @@ fun TestScreen(
     var finished by remember { mutableStateOf(false) }
     var reviewing by remember { mutableStateOf(false) }
     var showSummary by remember { mutableStateOf(false) }
+    var mistakesSaved by remember { mutableStateOf(false) }
 
     var secondsRemaining by remember {
         mutableIntStateOf(ExamConfig.DURATION_SECONDS)
@@ -83,6 +101,15 @@ fun TestScreen(
         }
 
         if (secondsRemaining <= 0) {
+            if (!mistakesSaved) {
+                MistakesStore.recordMistakes(
+                    context = context,
+                    questions = questions,
+                    answers = answers
+                )
+                mistakesSaved = true
+            }
+
             finished = true
             showSummary = false
         }
@@ -113,6 +140,7 @@ fun TestScreen(
 
                 questionIndex = 0
                 secondsRemaining = ExamConfig.DURATION_SECONDS
+                mistakesSaved = false
                 finished = false
                 showSummary = false
             },
@@ -132,6 +160,15 @@ fun TestScreen(
                 showSummary = false
             },
             onSubmit = {
+                if (!mistakesSaved) {
+                    MistakesStore.recordMistakes(
+                        context = context,
+                        questions = questions,
+                        answers = answers
+                    )
+                    mistakesSaved = true
+                }
+
                 showSummary = false
                 finished = true
             }
@@ -211,7 +248,11 @@ fun TestScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = topic ?: "Test de examen",
+                text = when {
+                    questionIds != null -> "Test de mis fallos"
+                    topic != null -> topic
+                    else -> "Test de examen"
+                },
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -388,11 +429,7 @@ private fun AnswerButton(
         )
     ) {
         Text(
-            text = if (selected) {
-                "✓  $letter   $text"
-            } else {
-                "$letter   $text"
-            },
+            text = "$letter   $text",
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 8.dp),

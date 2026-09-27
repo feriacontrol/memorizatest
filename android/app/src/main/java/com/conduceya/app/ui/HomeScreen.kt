@@ -28,7 +28,8 @@ private val ConduceYaBlue = Color(0xFF0969F6)
 @Composable
 fun HomeScreen(
     onStartTest: () -> Unit,
-    onOpenTopics: () -> Unit
+    onOpenTopics: () -> Unit,
+    onOpenMistakes: () -> Unit
 ) {
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -120,7 +121,7 @@ fun HomeScreen(
             MenuCard(
                 title = "Mis fallos",
                 subtitle = "Repasa las preguntas que has fallado",
-                onClick = { }
+                onClick = onOpenMistakes
             )
 
             Spacer(modifier = Modifier.height(12.dp))
