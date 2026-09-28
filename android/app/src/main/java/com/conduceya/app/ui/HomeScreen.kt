@@ -632,54 +632,167 @@ private fun StartExamButton(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(66.dp)
-            .clip(RoundedCornerShape(36.dp))
+            .height(98.dp)
+            .clip(RoundedCornerShape(26.dp))
             .clickable { onClick() }
             .background(
                 Brush.horizontalGradient(
                     listOf(
-                        Color(0xFF0C8CFF),
-                        Color(0xFF176FFF),
-                        Color(0xFF0C8CFF)
+                        Color(0xEE111A27),
+                        Color(0xEB182333),
+                        Color(0xEE101824)
                     )
                 )
             )
             .border(
-                width = 1.4.dp,
-                color = Color.White.copy(alpha = 0.20f),
-                shape = RoundedCornerShape(36.dp)
+                width = 1.dp,
+                color = Color.White.copy(alpha = 0.17f),
+                shape = RoundedCornerShape(26.dp)
             )
-            .padding(horizontal = 24.dp)
     ) {
-        Row(
-            modifier = Modifier.fillMaxSize(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
+
+        // Brillo de cristal superior
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(38.dp)
+                .align(Alignment.TopCenter)
+                .background(
+                    Brush.verticalGradient(
+                        listOf(
+                            Color.White.copy(alpha = 0.075f),
+                            Color.Transparent
+                        )
+                    )
+                )
+        )
+
+        // Línea de acento premium
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(2.dp)
+                .align(Alignment.TopCenter)
+                .background(
+                    Brush.horizontalGradient(
+                        listOf(
+                            Color(0xFF188DFF),
+                            Color(0xFF35D5E8),
+                            Color(0xFF8B63FF)
+                        )
+                    )
+                )
+        )
+
+        // Insignia 30
+        Box(
+            modifier = Modifier
+                .padding(start = 18.dp)
+                .align(Alignment.CenterStart)
+                .size(62.dp)
+                .clip(RoundedCornerShape(20.dp))
+                .background(
+                    Brush.verticalGradient(
+                        listOf(
+                            Color(0xFF20364F),
+                            Color(0xFF142438)
+                        )
+                    )
+                )
+                .border(
+                    width = 1.2.dp,
+                    color = Color(0xFF31BFFF).copy(alpha = 0.75f),
+                    shape = RoundedCornerShape(20.dp)
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = "30",
+                    color = Color.White,
+                    fontSize = 23.sp,
+                    fontWeight = FontWeight.Black
+                )
+
+                Text(
+                    text = "PREG.",
+                    color = Color(0xFF91DFFF),
+                    fontSize = 8.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+
+        // Contenido principal
+        Column(
+            modifier = Modifier
+                .align(Alignment.CenterStart)
+                .padding(start = 96.dp, end = 72.dp),
+            verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "▶",
+                text = "HACER TEST DE 30 PREGUNTAS",
                 color = Color.White,
-                fontSize = 20.sp,
+                fontSize = 17.sp,
                 fontWeight = FontWeight.Black
             )
 
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.height(7.dp))
 
-            Text(
-                text = "Hacer test de 30 preguntas",
-                color = Color.White,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Black
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "✓",
+                    color = Color(0xFF52E6B1),
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Black
+                )
 
-            Spacer(modifier = Modifier.width(16.dp))
+                Spacer(modifier = Modifier.width(5.dp))
 
+                Text(
+                    text = "Preguntas reales DGT + contenido verificado DGT/BOE",
+                    color = Color.White.copy(alpha = 0.72f),
+                    fontSize = 10.5.sp,
+                    fontWeight = FontWeight.Medium,
+                    lineHeight = 13.sp
+                )
+            }
+        }
+
+        // Botón de avance
+        Box(
+            modifier = Modifier
+                .padding(end = 18.dp)
+                .align(Alignment.CenterEnd)
+                .size(44.dp)
+                .clip(CircleShape)
+                .background(
+                    Brush.verticalGradient(
+                        listOf(
+                            Color(0xFF268FFF).copy(alpha = 0.38f),
+                            Color(0xFF735CFF).copy(alpha = 0.25f)
+                        )
+                    )
+                )
+                .border(
+                    width = 1.dp,
+                    color = Color.White.copy(alpha = 0.22f),
+                    shape = CircleShape
+                ),
+            contentAlignment = Alignment.Center
+        ) {
             Text(
                 text = "›",
                 color = Color.White,
-                fontSize = 26.sp,
-                fontWeight = FontWeight.Black
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold
             )
         }
     }
 }
+

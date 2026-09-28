@@ -1,12 +1,37 @@
 package com.conduceya.app.data
 
+import com.conduceya.app.data.questions.GeneralRulesQuestions
+import com.conduceya.app.data.questions.AlcoholQuestions
+import com.conduceya.app.data.questions.PriorityQuestions
+import com.conduceya.app.data.questions.VulnerableUsersQuestions
+import com.conduceya.app.data.questions.SpeedQuestions
+import com.conduceya.app.data.questions.LightingQuestions
+import com.conduceya.app.data.questions.ParkingQuestions
+import com.conduceya.app.data.questions.OvertakingQuestions
+import com.conduceya.app.data.questions.RestraintQuestions
+import com.conduceya.app.data.questions.TunnelRailQuestions
+import com.conduceya.app.data.questions.SignalsQuestions
+import com.conduceya.app.data.questions.ManeuverQuestions
+import com.conduceya.app.data.questions.LaneQuestions
+import com.conduceya.app.data.questions.DocumentationQuestions
+import com.conduceya.app.data.questions.VehicleTechQuestions
+import com.conduceya.app.data.questions.AccidentQuestions
+import com.conduceya.app.data.questions.AdverseConditionsQuestions
+import com.conduceya.app.data.questions.FatigueQuestions
+import com.conduceya.app.data.questions.EcoDrivingQuestions
+import com.conduceya.app.data.questions.LoadQuestions
+import com.conduceya.app.data.questions.V16Questions
+import com.conduceya.app.data.questions.MedicationQuestions
+import com.conduceya.app.data.questions.DistanceQuestions
+import com.conduceya.app.data.questions.RoadMarkingQuestions
+
 import com.conduceya.app.model.QuestionDifficulty
 import com.conduceya.app.model.QuestionSourceType
 import com.conduceya.app.model.TestQuestion
 
 object QuestionBank {
 
-    val questions = listOf(
+    private val baseQuestions = listOf(
 
         TestQuestion(
             id = 1,
@@ -552,4 +577,32 @@ object QuestionBank {
             difficulty = QuestionDifficulty.EASY
         )
     )
+
+    val questions =
+        baseQuestions +
+        GeneralRulesQuestions.questions +
+        AlcoholQuestions.questions +
+        PriorityQuestions.questions +
+        VulnerableUsersQuestions.questions +
+        SpeedQuestions.questions +
+        LightingQuestions.questions +
+        ParkingQuestions.questions +
+        OvertakingQuestions.questions +
+        RestraintQuestions.questions +
+        TunnelRailQuestions.questions +
+        SignalsQuestions.questions +
+        ManeuverQuestions.questions +
+        LaneQuestions.questions +
+        DocumentationQuestions.questions +
+        VehicleTechQuestions.questions +
+        AccidentQuestions.questions +
+        AdverseConditionsQuestions.questions +
+        FatigueQuestions.questions +
+        EcoDrivingQuestions.questions +
+        LoadQuestions.questions +
+        V16Questions.questions +
+        MedicationQuestions.questions +
+        DistanceQuestions.questions +
+        RoadMarkingQuestions.questions
+
 }
