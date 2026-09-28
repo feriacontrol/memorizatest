@@ -50,6 +50,11 @@ import com.conduceya.app.data.questions.OfficialDgtQuestions260
 import com.conduceya.app.data.questions.OfficialDgtQuestions259
 import com.conduceya.app.data.questions.OfficialDgtQuestions258
 import com.conduceya.app.data.questions.OfficialDgtBatch257to253
+import com.conduceya.app.data.questions.OfficialDgtBatch252to248
+import com.conduceya.app.data.questions.OfficialDgtBatch247to243
+import com.conduceya.app.data.questions.OfficialDgtBatch242to238
+import com.conduceya.app.data.questions.OfficialDgtBatch237to232
+import com.conduceya.app.data.questions.VerifiedBatch571to670
 
 import com.conduceya.app.model.QuestionDifficulty
 import com.conduceya.app.model.QuestionSourceType
@@ -655,6 +660,11 @@ object QuestionBank {
         OfficialDgtQuestions260.questions +
         OfficialDgtQuestions259.questions +
         OfficialDgtQuestions258.questions +
-        OfficialDgtBatch257to253.questions
+        OfficialDgtBatch257to253.questions +
+        OfficialDgtBatch252to248.questions +
+        OfficialDgtBatch247to243.questions +
+        OfficialDgtBatch242to238.questions +
+        OfficialDgtBatch237to232.questions +
+        VerifiedBatch571to670.questions
 
 }
