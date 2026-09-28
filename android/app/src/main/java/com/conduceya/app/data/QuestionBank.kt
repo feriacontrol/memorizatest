@@ -58,6 +58,8 @@ import com.conduceya.app.data.questions.VerifiedBatch571to670
 import com.conduceya.app.data.questions.VerifiedBatch671to770
 import com.conduceya.app.data.questions.VerifiedBatch771to820
 import com.conduceya.app.data.questions.VerifiedBatch821to870
+import com.conduceya.app.data.questions.VerifiedBatch871to920
+import com.conduceya.app.data.questions.VerifiedBatch921to970
 
 import com.conduceya.app.model.QuestionDifficulty
 import com.conduceya.app.model.QuestionSourceType
@@ -671,6 +673,8 @@ object QuestionBank {
         VerifiedBatch571to670.questions +
         VerifiedBatch671to770.questions +
         VerifiedBatch771to820.questions +
-        VerifiedBatch821to870.questions
+        VerifiedBatch821to870.questions +
+        VerifiedBatch871to920.questions +
+        VerifiedBatch921to970.questions
 
 }
