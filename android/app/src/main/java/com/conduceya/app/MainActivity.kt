@@ -11,6 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.conduceya.app.ui.HomeScreen
 import com.conduceya.app.ui.MistakesScreen
+import com.conduceya.app.ui.StatisticsScreen
 import com.conduceya.app.ui.TestScreen
 import com.conduceya.app.ui.TopicsScreen
 
@@ -18,6 +19,7 @@ private enum class AppScreen {
     HOME,
     TOPICS,
     MISTAKES,
+    STATISTICS,
     TEST
 }
 
@@ -56,6 +58,9 @@ class MainActivity : ComponentActivity() {
                         },
                         onOpenMistakes = {
                             currentScreen = AppScreen.MISTAKES
+                        },
+                        onOpenStatistics = {
+                            currentScreen = AppScreen.STATISTICS
                         }
                     )
 
@@ -78,6 +83,12 @@ class MainActivity : ComponentActivity() {
                             selectedTopic = null
                             selectedQuestionIds = ids
                             currentScreen = AppScreen.TEST
+                        }
+                    )
+
+                    AppScreen.STATISTICS -> StatisticsScreen(
+                        onBack = {
+                            currentScreen = AppScreen.HOME
                         }
                     )
 

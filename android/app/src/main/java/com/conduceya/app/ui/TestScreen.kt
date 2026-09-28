@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.conduceya.app.data.QuestionBank
 import com.conduceya.app.data.MistakesStore
+import com.conduceya.app.data.ExamHistoryStore
 import com.conduceya.app.model.ExamConfig
 import kotlinx.coroutines.delay
 
@@ -81,6 +82,7 @@ fun TestScreen(
     var reviewing by remember { mutableStateOf(false) }
     var showSummary by remember { mutableStateOf(false) }
     var mistakesSaved by remember { mutableStateOf(false) }
+    var historySaved by remember { mutableStateOf(false) }
 
     var secondsRemaining by remember {
         mutableIntStateOf(ExamConfig.DURATION_SECONDS)
@@ -108,6 +110,27 @@ fun TestScreen(
                     answers = answers
                 )
                 mistakesSaved = true
+            }
+
+            val isFullExam =
+                topic == null &&
+                questionIds == null &&
+                questions.size == ExamConfig.QUESTION_COUNT
+
+            if (isFullExam && !historySaved) {
+
+                val errors = questions.indices.count { index ->
+                    answers.getOrNull(index) !=
+                        questions[index].correctAnswer
+                }
+
+                ExamHistoryStore.recordExam(
+                    context = context,
+                    errors = errors,
+                    passed = errors <= ExamConfig.MAX_ERRORS
+                )
+
+                historySaved = true
             }
 
             finished = true
@@ -141,6 +164,7 @@ fun TestScreen(
                 questionIndex = 0
                 secondsRemaining = ExamConfig.DURATION_SECONDS
                 mistakesSaved = false
+                historySaved = false
                 finished = false
                 showSummary = false
             },
@@ -167,6 +191,27 @@ fun TestScreen(
                         answers = answers
                     )
                     mistakesSaved = true
+                }
+
+                val isFullExam =
+                    topic == null &&
+                    questionIds == null &&
+                    questions.size == ExamConfig.QUESTION_COUNT
+
+                if (isFullExam && !historySaved) {
+
+                    val errors = questions.indices.count { index ->
+                        answers.getOrNull(index) !=
+                            questions[index].correctAnswer
+                    }
+
+                    ExamHistoryStore.recordExam(
+                        context = context,
+                        errors = errors,
+                        passed = errors <= ExamConfig.MAX_ERRORS
+                    )
+
+                    historySaved = true
                 }
 
                 showSummary = false
