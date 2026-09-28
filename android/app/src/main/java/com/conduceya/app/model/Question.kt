@@ -18,6 +18,11 @@ enum class QuestionType {
     IMAGE
 }
 
+enum class QuestionOrigin {
+    VERIFIED,
+    DGT_PUBLISHED
+}
+
 data class TestQuestion(
     val id: Int,
 
@@ -37,6 +42,7 @@ data class TestQuestion(
     val explanation: String,
 
     // Fuente y verificación
+    val origin: QuestionOrigin = QuestionOrigin.VERIFIED,
     val sourceType: QuestionSourceType = QuestionSourceType.ELABORACION_PROPIA,
     val reference: String,
     val legalReference: String = "",

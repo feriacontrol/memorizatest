@@ -24,6 +24,32 @@ import com.conduceya.app.data.questions.V16Questions
 import com.conduceya.app.data.questions.MedicationQuestions
 import com.conduceya.app.data.questions.DistanceQuestions
 import com.conduceya.app.data.questions.RoadMarkingQuestions
+import com.conduceya.app.data.questions.PedestrianQuestions
+import com.conduceya.app.data.questions.CyclistQuestions
+import com.conduceya.app.data.questions.NightDrivingQuestions
+import com.conduceya.app.data.questions.RiskQuestions
+import com.conduceya.app.data.questions.OfficialDgtQuestions
+import com.conduceya.app.data.questions.OfficialDgtQuestions277
+import com.conduceya.app.data.questions.OfficialDgtQuestions276
+import com.conduceya.app.data.questions.OfficialDgtQuestions275
+import com.conduceya.app.data.questions.OfficialDgtQuestions274
+import com.conduceya.app.data.questions.OfficialDgtQuestions273
+import com.conduceya.app.data.questions.OfficialDgtQuestions272
+import com.conduceya.app.data.questions.OfficialDgtQuestions271
+import com.conduceya.app.data.questions.OfficialDgtQuestions270
+import com.conduceya.app.data.questions.OfficialDgtQuestions269
+import com.conduceya.app.data.questions.OfficialDgtQuestions268
+import com.conduceya.app.data.questions.OfficialDgtQuestions267
+import com.conduceya.app.data.questions.OfficialDgtQuestions266
+import com.conduceya.app.data.questions.OfficialDgtQuestions265
+import com.conduceya.app.data.questions.OfficialDgtQuestions264
+import com.conduceya.app.data.questions.OfficialDgtQuestions263
+import com.conduceya.app.data.questions.OfficialDgtQuestions262
+import com.conduceya.app.data.questions.OfficialDgtQuestions261
+import com.conduceya.app.data.questions.OfficialDgtQuestions260
+import com.conduceya.app.data.questions.OfficialDgtQuestions259
+import com.conduceya.app.data.questions.OfficialDgtQuestions258
+import com.conduceya.app.data.questions.OfficialDgtBatch257to253
 
 import com.conduceya.app.model.QuestionDifficulty
 import com.conduceya.app.model.QuestionSourceType
@@ -603,6 +629,32 @@ object QuestionBank {
         V16Questions.questions +
         MedicationQuestions.questions +
         DistanceQuestions.questions +
-        RoadMarkingQuestions.questions
+        RoadMarkingQuestions.questions +
+        PedestrianQuestions.questions +
+        CyclistQuestions.questions +
+        NightDrivingQuestions.questions +
+        RiskQuestions.questions +
+        OfficialDgtQuestions.questions +
+        OfficialDgtQuestions277.questions +
+        OfficialDgtQuestions276.questions +
+        OfficialDgtQuestions275.questions +
+        OfficialDgtQuestions274.questions +
+        OfficialDgtQuestions273.questions +
+        OfficialDgtQuestions272.questions +
+        OfficialDgtQuestions271.questions +
+        OfficialDgtQuestions270.questions +
+        OfficialDgtQuestions269.questions +
+        OfficialDgtQuestions268.questions +
+        OfficialDgtQuestions267.questions +
+        OfficialDgtQuestions266.questions +
+        OfficialDgtQuestions265.questions +
+        OfficialDgtQuestions264.questions +
+        OfficialDgtQuestions263.questions +
+        OfficialDgtQuestions262.questions +
+        OfficialDgtQuestions261.questions +
+        OfficialDgtQuestions260.questions +
+        OfficialDgtQuestions259.questions +
+        OfficialDgtQuestions258.questions +
+        OfficialDgtBatch257to253.questions
 
 }
