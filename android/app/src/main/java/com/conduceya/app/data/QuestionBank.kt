@@ -615,7 +615,7 @@ object QuestionBank {
         )
     )
 
-    val questions =
+    private val rawQuestions =
         baseQuestions +
         GeneralRulesQuestions.questions +
         AlcoholQuestions.questions +
@@ -678,5 +678,47 @@ object QuestionBank {
         VerifiedBatch871to920.questions +
         VerifiedBatch921to970.questions +
         VerifiedBatch971to1000.questions
+
+    /*
+     * Equilibra de forma determinista la posición visual de la
+     * respuesta correcta.
+     *
+     * IDs 1,4,7...    -> A
+     * IDs 2,5,8...    -> B
+     * IDs 3,6,9...    -> C
+     *
+     * Con IDs 1..1000:
+     * A = 334
+     * B = 333
+     * C = 333
+     *
+     * No cambia qué respuesta es correcta: únicamente intercambia
+     * posiciones y actualiza correctAnswer.
+     */
+    private fun TestQuestion.withBalancedAnswerPosition(): TestQuestion {
+        if (answers.size != 3 || correctAnswer !in 0..2) {
+            return this
+        }
+
+        val targetCorrectAnswer = (id - 1) % 3
+
+        if (correctAnswer == targetCorrectAnswer) {
+            return this
+        }
+
+        val reorderedAnswers = answers.toMutableList()
+
+        val originalCorrectText = reorderedAnswers[correctAnswer]
+        reorderedAnswers[correctAnswer] = reorderedAnswers[targetCorrectAnswer]
+        reorderedAnswers[targetCorrectAnswer] = originalCorrectText
+
+        return copy(
+            answers = reorderedAnswers,
+            correctAnswer = targetCorrectAnswer
+        )
+    }
+
+    val questions =
+        rawQuestions.map { it.withBalancedAnswerPosition() }
 
 }
