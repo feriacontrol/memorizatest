@@ -61,6 +61,7 @@ import com.conduceya.app.data.questions.VerifiedBatch821to870
 import com.conduceya.app.data.questions.VerifiedBatch871to920
 import com.conduceya.app.data.questions.VerifiedBatch921to970
 import com.conduceya.app.data.questions.VerifiedBatch971to1000
+import com.conduceya.app.data.questions.AuditReplacementQuestions
 
 import com.conduceya.app.model.QuestionDifficulty
 import com.conduceya.app.model.QuestionSourceType
@@ -719,6 +720,8 @@ object QuestionBank {
     }
 
     val questions =
-        rawQuestions.map { it.withBalancedAnswerPosition() }
+        rawQuestions
+            .map { AuditReplacementQuestions.byId[it.id] ?: it }
+            .map { it.withBalancedAnswerPosition() }
 
 }
