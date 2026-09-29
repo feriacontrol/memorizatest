@@ -180,11 +180,11 @@ object OfficialDgtQuestions274 {
                 "Solo si la bicicleta está detenida."
             ),
             correctAnswer = 0,
-            explanation = "Puede ocuparse el carril contrario para mantener la separación necesaria siempre que la maniobra pueda efectuarse sin peligro.",
+            explanation = "Puede ocuparse parte o la totalidad del carril contrario para mantener una separación lateral de al menos 1,5 metros, siempre que la maniobra pueda efectuarse sin peligro. Fuera de poblado, además, debe reducirse la velocidad respecto al límite de la vía en al menos 20 km/h antes y durante toda la maniobra.",
             origin = QuestionOrigin.DGT_PUBLISHED,
             sourceType = QuestionSourceType.DGT,
             reference = "Revista Tráfico y Seguridad Vial - Test 274, junio 2025, pregunta 13",
-            legalReference = "DGT - Adelantamiento a ciclistas",
+            legalReference = "Reglamento General de Circulación, artículo 85.4",
             lastVerified = "2026-09-28",
             difficulty = QuestionDifficulty.MEDIUM
         ),

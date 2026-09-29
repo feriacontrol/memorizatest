@@ -40,11 +40,11 @@ object OfficialDgtQuestions273 {
                 "2 metros."
             ),
             correctAnswer = 1,
-            explanation = "Debe mantenerse una separación lateral mínima de 1,5 metros. Además, desde el 1 de octubre de 2026 se aplican nuevas medidas de protección a usuarios vulnerables previstas en el Reglamento.",
+            explanation = "Debe mantenerse una separación lateral mínima de 1,5 metros. Al realizarse fuera de poblado, antes y durante toda la maniobra debe reducirse además la velocidad respecto al límite de la vía en al menos 20 km/h.",
             origin = QuestionOrigin.DGT_PUBLISHED,
             sourceType = QuestionSourceType.DGT,
             reference = "Revista Tráfico y Seguridad Vial - Test 273, abril 2025, pregunta 5",
-            legalReference = "Reglamento General de Circulación, artículo 85",
+            legalReference = "Reglamento General de Circulación, artículo 85.4",
             lastVerified = "2026-09-28",
             difficulty = QuestionDifficulty.MEDIUM
         ),

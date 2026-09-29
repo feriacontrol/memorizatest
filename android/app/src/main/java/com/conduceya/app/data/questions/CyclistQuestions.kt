@@ -76,10 +76,10 @@ object CyclistQuestions {
                 "2,5 metros."
             ),
             correctAnswer = 1,
-            explanation = "La separación lateral de seguridad en el adelantamiento a ciclistas debe ser de al menos 1,5 metros.",
+            explanation = "Al adelantar a un ciclista debe mantenerse una separación lateral de al menos 1,5 metros. Si el adelantamiento se realiza fuera de poblado, antes y durante toda la maniobra debe reducirse la velocidad respecto al límite de la vía en al menos 20 km/h.",
             sourceType = QuestionSourceType.DGT,
             reference = "Dirección General de Tráfico",
-            legalReference = "Adelantamiento a ciclistas",
+            legalReference = "Reglamento General de Circulación, artículo 85.4",
             lastVerified = "2026-09-28",
             difficulty = QuestionDifficulty.EASY
         ),
@@ -95,10 +95,10 @@ object CyclistQuestions {
                 "el adelantamiento por el arcén."
             ),
             correctAnswer = 0,
-            explanation = "Cuando existe más de un carril por sentido, el adelantamiento a ciclistas exige ocupar completamente el carril contiguo.",
+            explanation = "Cuando la calzada tiene más de un carril por sentido, para adelantar a un ciclista es obligatorio realizar un cambio completo de carril. Si el adelantamiento se efectúa fuera de poblado, además debe reducirse la velocidad respecto al límite de la vía en al menos 20 km/h antes y durante toda la maniobra.",
             sourceType = QuestionSourceType.DGT,
             reference = "Dirección General de Tráfico",
-            legalReference = "Adelantamiento a ciclistas",
+            legalReference = "Reglamento General de Circulación, artículo 85.4",
             lastVerified = "2026-09-28",
             difficulty = QuestionDifficulty.MEDIUM
         ),
