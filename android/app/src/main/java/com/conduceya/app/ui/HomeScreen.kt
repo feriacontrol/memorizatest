@@ -39,7 +39,8 @@ fun HomeScreen(
     onStartTest: () -> Unit,
     onOpenTopics: () -> Unit,
     onOpenMistakes: () -> Unit,
-    onOpenStatistics: () -> Unit
+    onOpenStatistics: () -> Unit,
+    onRemoveAds: () -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -83,7 +84,7 @@ fun HomeScreen(
                     )
             ) {
 
-                HeaderWithPermitMenu(isTablet)
+                HeaderWithPermitMenu(isTablet, onRemoveAds)
 
                 Spacer(
                     modifier = Modifier.height(
@@ -220,8 +221,84 @@ fun HomeScreen(
 }
 
 @Composable
+private fun RemoveAdsCard(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = modifier
+            .height(62.dp)
+            .clip(RoundedCornerShape(20.dp))
+            .background(
+                Brush.horizontalGradient(
+                    listOf(
+                        Color(0xFF2A2142),
+                        Color(0xFF1C1730)
+                    )
+                )
+            )
+            .border(
+                1.4.dp,
+                StatsPurple.copy(alpha = 0.75f),
+                RoundedCornerShape(20.dp)
+            )
+            .clickable { onClick() }
+            .padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .clip(RoundedCornerShape(14.dp))
+                .background(StatsPurple.copy(alpha = 0.28f))
+                .border(
+                    1.dp,
+                    StatsPurple.copy(alpha = 0.65f),
+                    RoundedCornerShape(14.dp)
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "✦",
+                color = StatsPurple,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Black
+            )
+        }
+
+        Spacer(modifier = Modifier.width(13.dp))
+
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(
+                text = "Sin anuncios",
+                color = Color.White,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Black
+            )
+
+            Text(
+                text = "2,99 € / año",
+                color = Color(0xFFC6B5FF),
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Black
+            )
+        }
+
+        Text(
+            text = "›",
+            color = StatsPurple,
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold
+        )
+    }
+}
+
+@Composable
 private fun HeaderWithPermitMenu(
-    isTablet: Boolean
+    isTablet: Boolean,
+    onRemoveAds: () -> Unit
 ) {
     if (isTablet) {
         Row(
@@ -231,9 +308,19 @@ private fun HeaderWithPermitMenu(
         ) {
             BrandHeader(isTablet = true)
 
-            PermitMenu(
-                modifier = Modifier.width(220.dp)
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                RemoveAdsCard(
+                    modifier = Modifier.width(220.dp),
+                    onClick = onRemoveAds
+                )
+
+                PermitMenu(
+                    modifier = Modifier.width(220.dp)
+                )
+            }
         }
     } else {
         Column(
@@ -242,6 +329,13 @@ private fun HeaderWithPermitMenu(
             BrandHeader(isTablet = false)
 
             Spacer(modifier = Modifier.height(10.dp))
+
+            RemoveAdsCard(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = onRemoveAds
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
 
             PermitMenu(
                 modifier = Modifier.fillMaxWidth()

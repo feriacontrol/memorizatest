@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import com.conduceya.app.data.ExamHistoryStore
 import com.conduceya.app.data.MistakesStore
 import com.conduceya.app.data.QuestionBank
+import com.conduceya.app.ads.InterstitialAdManager
 import com.conduceya.app.model.ExamConfig
 import kotlinx.coroutines.delay
 
@@ -46,6 +47,7 @@ fun TestScreen(
     onBack: () -> Unit
 ) {
     val context = LocalContext.current
+    val activity = context as? android.app.Activity
 
     val questions = remember(topic, questionIds) {
         val source = when {
@@ -79,6 +81,18 @@ fun TestScreen(
     var showSummary by remember { mutableStateOf(false) }
     var mistakesSaved by remember { mutableStateOf(false) }
     var historySaved by remember { mutableStateOf(false) }
+
+    fun finishTestWithAd() {
+        showSummary = false
+
+        if (activity != null) {
+            InterstitialAdManager.show(activity) {
+                finished = true
+            }
+        } else {
+            finished = true
+        }
+    }
 
     var secondsRemaining by remember {
         mutableIntStateOf(ExamConfig.DURATION_SECONDS)
@@ -128,8 +142,7 @@ fun TestScreen(
                 historySaved = true
             }
 
-            finished = true
-            showSummary = false
+            finishTestWithAd()
         }
     }
 
@@ -208,8 +221,7 @@ fun TestScreen(
                     historySaved = true
                 }
 
-                showSummary = false
-                finished = true
+                finishTestWithAd()
             }
         )
         return

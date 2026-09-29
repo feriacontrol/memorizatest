@@ -14,6 +14,10 @@ import com.conduceya.app.ui.MistakesScreen
 import com.conduceya.app.ui.StatisticsScreen
 import com.conduceya.app.ui.TestScreen
 import com.conduceya.app.ui.TopicsScreen
+import com.conduceya.app.ads.ConsentManager
+import com.conduceya.app.ads.InterstitialAdManager
+import com.conduceya.app.billing.BillingManager
+import com.google.android.gms.ads.MobileAds
 
 private enum class AppScreen {
     HOME,
@@ -29,6 +33,14 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         enableEdgeToEdge()
+
+        BillingManager.start(this)
+
+        ConsentManager.requestConsent(this) {
+            MobileAds.initialize(this) {
+                InterstitialAdManager.load(this)
+            }
+        }
 
         setContent {
             MaterialTheme {
@@ -61,6 +73,9 @@ class MainActivity : ComponentActivity() {
                         },
                         onOpenStatistics = {
                             currentScreen = AppScreen.STATISTICS
+                        },
+                        onRemoveAds = {
+                            BillingManager.purchase(this@MainActivity)
                         }
                     )
 
