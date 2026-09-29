@@ -153,19 +153,19 @@ object OfficialDgtQuestions263 {
             id = 385,
             topic = "Motocicletas",
             subtopic = "Equipación",
-            text = "Al conducir una motocicleta, ¿es aconsejable utilizar guantes incluso en verano?",
+            text = "Al circular en motocicleta por una vía interurbana, ¿es obligatorio utilizar guantes de protección?",
             answers = listOf(
-                "Sí, para proteger las manos en caso de caída.",
-                "No, porque dificultan la conducción.",
-                "Solo son aconsejables cuando llueve."
+                "Sí.",
+                "No, solo son recomendables.",
+                "Solo cuando llueve."
             ),
             correctAnswer = 0,
-            explanation = "Los guantes ayudan a proteger las manos frente a abrasiones y lesiones en caso de caída.",
-            origin = QuestionOrigin.DGT_PUBLISHED,
-            sourceType = QuestionSourceType.DGT,
-            reference = "Revista Tráfico y Seguridad Vial - Test 263, octubre 2022, pregunta 15",
-            legalReference = "DGT - Equipación de motoristas",
-            lastVerified = "2026-09-28",
+            explanation = "Desde el 1 de octubre de 2026, conductor y pasajero de motocicleta deben utilizar guantes de protección cuando circulen por vías interurbanas.",
+            origin = QuestionOrigin.VERIFIED,
+            sourceType = QuestionSourceType.BOE,
+            reference = "Reglamento General de Circulación",
+            legalReference = "Reglamento General de Circulación, artículo 118.1.b",
+            lastVerified = "2026-09-29",
             difficulty = QuestionDifficulty.EASY
         )
     )
