@@ -4,33 +4,18 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.ui.draw.clip
-import androidx.compose.material3.Text
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.Text
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -40,11 +25,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.conduceya.app.R
 
-private val BrandBlue = Color(0xFF20A4FF)
-private val CardBlue = Color(0xFF2B8CFF)
-private val CardGreen = Color(0xFF2ED0B3)
-private val CardOrange = Color(0xFFFFB13B)
-private val CardPurple = Color(0xFF9C6BFF)
+private val BrandBlue = Color(0xFF28A9FF)
+private val ExamGreen = Color(0xFF36D4AD)
+private val TopicsBlue = Color(0xFF398EFF)
+private val MistakesOrange = Color(0xFFFFAD42)
+private val StatsPurple = Color(0xFF9B72FF)
+
+private val PanelDark = Color(0xE6172435)
+private val PanelDark2 = Color(0xE6101927)
 
 @Composable
 fun HomeScreen(
@@ -53,9 +41,8 @@ fun HomeScreen(
     onOpenMistakes: () -> Unit,
     onOpenStatistics: () -> Unit
 ) {
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
+    Box(modifier = Modifier.fillMaxSize()) {
+
         Image(
             painter = painterResource(R.drawable.bg_home_background),
             contentDescription = null,
@@ -69,9 +56,9 @@ fun HomeScreen(
                 .background(
                     Brush.verticalGradient(
                         listOf(
-                            Color(0x77000000),
-                            Color(0x55000000),
-                            Color(0xAA000000)
+                            Color(0xAA06101B),
+                            Color(0xC20A1420),
+                            Color(0xF0060D16)
                         )
                     )
                 )
@@ -81,156 +68,152 @@ fun HomeScreen(
             modifier = Modifier.fillMaxSize()
         ) {
             val isTablet = maxWidth >= 700.dp
-            val horizontalPadding = if (isTablet) 42.dp else 20.dp
-            val gap = 16.dp
-
-            val panelWidth =
-                if (isTablet) {
-                    (maxWidth - horizontalPadding * 2) * 0.76f
-                } else {
-                    maxWidth - horizontalPadding * 2
-                }
-
-            val tileHeight =
-                if (isTablet) 178.dp else 155.dp
-
-            val tileWidth =
-                if (isTablet) {
-                    (panelWidth - gap) / 2
-                } else {
-                    panelWidth
-                }
+            val contentWidth = if (isTablet) 920.dp else maxWidth
+            val horizontalPadding = if (isTablet) 30.dp else 18.dp
 
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
+                    .widthIn(max = contentWidth)
+                    .fillMaxWidth()
+                    .align(Alignment.TopCenter)
                     .verticalScroll(rememberScrollState())
                     .padding(
                         horizontal = horizontalPadding,
-                        vertical = 46.dp
+                        vertical = if (isTablet) 32.dp else 20.dp
                     )
             ) {
-                HeaderWithPermitMenu(
-                    isTablet = isTablet
-                )
+
+                HeaderWithPermitMenu(isTablet)
 
                 Spacer(
                     modifier = Modifier.height(
-                        if (isTablet) 28.dp else 24.dp
+                        if (isTablet) 28.dp else 20.dp
                     )
                 )
 
+                Text(
+                    text = "PREPÁRATE PARA APROBAR",
+                    color = BrandBlue,
+                    fontSize = 11.sp,
+                    letterSpacing = 1.6.sp,
+                    fontWeight = FontWeight.Black
+                )
+
+                Spacer(modifier = Modifier.height(6.dp))
+
+                Text(
+                    text = "¿Qué quieres hacer hoy?",
+                    color = Color.White,
+                    fontSize = if (isTablet) 29.sp else 25.sp,
+                    fontWeight = FontWeight.Black
+                )
+
+                Spacer(modifier = Modifier.height(6.dp))
+
+                Text(
+                    text = "Practica, revisa tus fallos y comprueba tu progreso.",
+                    color = Color.White.copy(alpha = 0.64f),
+                    fontSize = 13.sp
+                )
+
+                Spacer(modifier = Modifier.height(22.dp))
+
+                StartExamButton(
+                    isTablet = isTablet,
+                    onClick = onStartTest
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                SectionTitle(
+                    title = "Practicar y mejorar",
+                    subtitle = "Elige cómo quieres entrenar"
+                )
+
+                Spacer(modifier = Modifier.height(13.dp))
+
                 if (isTablet) {
                     Row(
-                        modifier = Modifier.width(panelWidth),
-                        horizontalArrangement = Arrangement.spacedBy(gap)
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(14.dp)
                     ) {
                         HomeTile(
-                            modifier = Modifier.width(tileWidth),
-                            title = "Tests\npor temas",
-                            subtitle = "Practica lo que más te cuesta",
+                            modifier = Modifier.weight(1f),
+                            title = "Tests por temas",
+                            subtitle = "Practica exactamente lo que necesitas.",
                             iconRes = R.drawable.icon_topics,
-                            accent = CardBlue,
-                            height = tileHeight,
+                            accent = TopicsBlue,
                             onClick = onOpenTopics
                         )
 
                         HomeTile(
-                            modifier = Modifier.width(tileWidth),
-                            title = "Simulación\nde examen",
-                            subtitle = "30 preguntas como en el examen real",
-                            iconRes = R.drawable.icon_exam,
-                            accent = CardGreen,
-                            height = tileHeight,
-                            onClick = onStartTest
+                            modifier = Modifier.weight(1f),
+                            title = "Mis fallos",
+                            subtitle = "Vuelve a intentar las preguntas falladas.",
+                            iconRes = R.drawable.icon_mistakes,
+                            accent = MistakesOrange,
+                            onClick = onOpenMistakes
                         )
                     }
 
-                    Spacer(modifier = Modifier.height(gap))
+                    Spacer(modifier = Modifier.height(14.dp))
 
                     Row(
-                        modifier = Modifier.width(panelWidth),
-                        horizontalArrangement = Arrangement.spacedBy(gap)
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(14.dp)
                     ) {
                         HomeTile(
-                            modifier = Modifier.width(tileWidth),
-                            title = "Mis fallos",
-                            subtitle = "Repasa las preguntas que has fallado",
-                            iconRes = R.drawable.icon_mistakes,
-                            accent = CardOrange,
-                            height = tileHeight,
-                            onClick = onOpenMistakes
+                            modifier = Modifier.weight(1f),
+                            title = "Estadísticas",
+                            subtitle = "Comprueba cómo estás evolucionando.",
+                            iconRes = R.drawable.icon_stats,
+                            accent = StatsPurple,
+                            onClick = onOpenStatistics
                         )
 
                         HomeTile(
-                            modifier = Modifier.width(tileWidth),
-                            title = "Estadísticas",
-                            subtitle = "Comprueba tu evolución",
-                            iconRes = R.drawable.icon_stats,
-                            accent = CardPurple,
-                            height = tileHeight,
-                            onClick = onOpenStatistics
+                            modifier = Modifier.weight(1f),
+                            title = "Simulación",
+                            subtitle = "Haz otro examen completo de 30 preguntas.",
+                            iconRes = R.drawable.icon_exam,
+                            accent = ExamGreen,
+                            onClick = onStartTest
                         )
                     }
                 } else {
                     HomeTile(
                         modifier = Modifier.fillMaxWidth(),
                         title = "Tests por temas",
-                        subtitle = "Practica lo que más te cuesta",
+                        subtitle = "Practica exactamente lo que necesitas.",
                         iconRes = R.drawable.icon_topics,
-                        accent = CardBlue,
-                        height = tileHeight,
+                        accent = TopicsBlue,
                         onClick = onOpenTopics
                     )
 
-                    Spacer(modifier = Modifier.height(14.dp))
-
-                    HomeTile(
-                        modifier = Modifier.fillMaxWidth(),
-                        title = "Simulación de examen",
-                        subtitle = "30 preguntas como en el examen real",
-                        iconRes = R.drawable.icon_exam,
-                        accent = CardGreen,
-                        height = tileHeight,
-                        onClick = onStartTest
-                    )
-
-                    Spacer(modifier = Modifier.height(14.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
 
                     HomeTile(
                         modifier = Modifier.fillMaxWidth(),
                         title = "Mis fallos",
-                        subtitle = "Repasa las preguntas que has fallado",
+                        subtitle = "Vuelve a intentar las preguntas falladas.",
                         iconRes = R.drawable.icon_mistakes,
-                        accent = CardOrange,
-                        height = tileHeight,
+                        accent = MistakesOrange,
                         onClick = onOpenMistakes
                     )
 
-                    Spacer(modifier = Modifier.height(14.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
 
                     HomeTile(
                         modifier = Modifier.fillMaxWidth(),
                         title = "Estadísticas",
-                        subtitle = "Comprueba tu evolución",
+                        subtitle = "Comprueba cómo estás evolucionando.",
                         iconRes = R.drawable.icon_stats,
-                        accent = CardPurple,
-                        height = tileHeight,
+                        accent = StatsPurple,
                         onClick = onOpenStatistics
                     )
                 }
 
-                Spacer(modifier = Modifier.height(22.dp))
-
-                Box(
-                    modifier = Modifier.width(panelWidth)
-                ) {
-                    StartExamButton(
-                        onClick = onStartTest
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(26.dp))
+                Spacer(modifier = Modifier.height(30.dp))
             }
         }
     }
@@ -240,231 +223,28 @@ fun HomeScreen(
 private fun HeaderWithPermitMenu(
     isTablet: Boolean
 ) {
-    Box(
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Box(
-            modifier = Modifier.align(Alignment.CenterStart)
+    if (isTablet) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            BrandHeader(
-                isTablet = isTablet
+            BrandHeader(isTablet = true)
+
+            PermitMenu(
+                modifier = Modifier.width(220.dp)
             )
         }
-
-        Box(
-            modifier = Modifier.align(Alignment.CenterEnd)
+    } else {
+        Column(
+            modifier = Modifier.fillMaxWidth()
         ) {
-            PermitMenu()
-        }
-    }
-}
+            BrandHeader(isTablet = false)
 
-@Composable
-private fun PermitMenu() {
-    var expanded by remember {
-        mutableStateOf(false)
-    }
+            Spacer(modifier = Modifier.height(10.dp))
 
-    Box {
-        Box(
-            modifier = Modifier
-                .width(245.dp)
-                .height(72.dp)
-                .clip(RoundedCornerShape(20.dp))
-                .background(
-                    Brush.horizontalGradient(
-                        listOf(
-                            Color(0xEE101B2B),
-                            Color(0xDD17263A)
-                        )
-                    )
-                )
-                .border(
-                    width = 1.2.dp,
-                    color = BrandBlue.copy(alpha = 0.75f),
-                    shape = RoundedCornerShape(20.dp)
-                )
-                .clickable {
-                    expanded = true
-                }
-                .padding(
-                    horizontal = 14.dp,
-                    vertical = 10.dp
-                )
-        ) {
-            Row(
-                modifier = Modifier.fillMaxSize(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(48.dp)
-                        .clip(RoundedCornerShape(14.dp))
-                        .background(
-                            Brush.verticalGradient(
-                                listOf(
-                                    Color(0xFF289FFF),
-                                    Color(0xFF126BDF)
-                                )
-                            )
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "B",
-                        color = Color.White,
-                        fontSize = 22.sp,
-                        fontWeight = FontWeight.Black
-                    )
-                }
-
-                Spacer(
-                    modifier = Modifier.width(13.dp)
-                )
-
-                Column {
-                    Text(
-                        text = "PERMISO",
-                        color = Color.White.copy(alpha = 0.55f),
-                        fontSize = 10.sp,
-                        fontWeight = FontWeight.Bold,
-                        letterSpacing = 1.3.sp
-                    )
-
-                    Spacer(
-                        modifier = Modifier.height(2.dp)
-                    )
-
-                    Text(
-                        text = "B · Coche",
-                        color = Color.White,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-
-                Spacer(
-                    modifier = Modifier.width(20.dp)
-                )
-
-                Text(
-                    text = "⌄",
-                    color = BrandBlue,
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Black
-                )
-            }
-        }
-
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = {
-                expanded = false
-            },
-            modifier = Modifier
-                .width(285.dp)
-                .background(Color(0xFF101A29))
-        ) {
-            DropdownMenuItem(
-                text = {
-                    Column {
-                        Text(
-                            text = "B · Coche",
-                            color = Color.White,
-                            fontSize = 17.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-
-                        Text(
-                            text = "Permiso actual",
-                            color = BrandBlue,
-                            fontSize = 12.sp
-                        )
-                    }
-                },
-                onClick = {
-                    expanded = false
-                }
-            )
-
-            DropdownMenuItem(
-                text = {
-                    Column {
-                        Text(
-                            text = "A · Moto",
-                            color = Color.White.copy(alpha = 0.50f),
-                            fontSize = 16.sp
-                        )
-
-                        Text(
-                            text = "Próximamente",
-                            color = Color.White.copy(alpha = 0.30f),
-                            fontSize = 11.sp
-                        )
-                    }
-                },
-                onClick = { },
-                enabled = false
-            )
-
-            DropdownMenuItem(
-                text = {
-                    Column {
-                        Text(
-                            text = "C · Camión",
-                            color = Color.White.copy(alpha = 0.50f),
-                            fontSize = 16.sp
-                        )
-
-                        Text(
-                            text = "Próximamente",
-                            color = Color.White.copy(alpha = 0.30f),
-                            fontSize = 11.sp
-                        )
-                    }
-                },
-                onClick = { },
-                enabled = false
-            )
-
-            DropdownMenuItem(
-                text = {
-                    Column {
-                        Text(
-                            text = "D · Autobús",
-                            color = Color.White.copy(alpha = 0.50f),
-                            fontSize = 16.sp
-                        )
-
-                        Text(
-                            text = "Próximamente",
-                            color = Color.White.copy(alpha = 0.30f),
-                            fontSize = 11.sp
-                        )
-                    }
-                },
-                onClick = { },
-                enabled = false
-            )
-
-            DropdownMenuItem(
-                text = {
-                    Column {
-                        Text(
-                            text = "AM · Ciclomotor",
-                            color = Color.White.copy(alpha = 0.50f),
-                            fontSize = 16.sp
-                        )
-
-                        Text(
-                            text = "Próximamente",
-                            color = Color.White.copy(alpha = 0.30f),
-                            fontSize = 11.sp
-                        )
-                    }
-                },
-                onClick = { },
-                enabled = false
+            PermitMenu(
+                modifier = Modifier.fillMaxWidth()
             )
         }
     }
@@ -475,16 +255,171 @@ private fun BrandHeader(
     isTablet: Boolean
 ) {
     Image(
-        painter = painterResource(
-            id = R.drawable.logo_conduceya
-        ),
+        painter = painterResource(R.drawable.logo_conduceya),
         contentDescription = "ConduceYa",
         modifier = Modifier
-            .width(if (isTablet) 430.dp else 310.dp)
-            .height(if (isTablet) 115.dp else 85.dp),
+            .width(if (isTablet) 320.dp else 235.dp)
+            .height(if (isTablet) 78.dp else 62.dp),
         contentScale = ContentScale.Fit,
         alignment = Alignment.CenterStart
     )
+}
+
+@Composable
+private fun PermitMenu(
+    modifier: Modifier = Modifier
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Box(modifier = modifier) {
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(62.dp)
+                .clip(RoundedCornerShape(18.dp))
+                .background(
+                    Brush.horizontalGradient(
+                        listOf(
+                            Color(0xF0192739),
+                            Color(0xF0101B29)
+                        )
+                    )
+                )
+                .border(
+                    1.dp,
+                    BrandBlue.copy(alpha = 0.45f),
+                    RoundedCornerShape(18.dp)
+                )
+                .clickable { expanded = true }
+                .padding(horizontal = 11.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(42.dp)
+                    .clip(RoundedCornerShape(13.dp))
+                    .background(
+                        Brush.verticalGradient(
+                            listOf(
+                                Color(0xFF32B4FF),
+                                Color(0xFF1971E8)
+                            )
+                        )
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "B",
+                    color = Color.White,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Black
+                )
+            }
+
+            Spacer(modifier = Modifier.width(11.dp))
+
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = "PERMISO ACTUAL",
+                    color = Color.White.copy(alpha = 0.46f),
+                    fontSize = 9.sp,
+                    letterSpacing = 1.sp,
+                    fontWeight = FontWeight.Bold
+                )
+
+                Text(
+                    text = "B · Coche",
+                    color = Color.White,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
+            Text(
+                text = "⌄",
+                color = BrandBlue,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Black
+            )
+        }
+
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier
+                .width(270.dp)
+                .background(Color(0xFF101A29))
+        ) {
+            DropdownMenuItem(
+                text = {
+                    Column {
+                        Text(
+                            "B · Coche",
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            "Permiso actual",
+                            color = BrandBlue,
+                            fontSize = 11.sp
+                        )
+                    }
+                },
+                onClick = { expanded = false }
+            )
+
+            listOf(
+                "A · Moto",
+                "C · Camión",
+                "D · Autobús",
+                "AM · Ciclomotor"
+            ).forEach { name ->
+                DropdownMenuItem(
+                    text = {
+                        Column {
+                            Text(
+                                name,
+                                color = Color.White.copy(alpha = 0.45f)
+                            )
+                            Text(
+                                "Próximamente",
+                                color = Color.White.copy(alpha = 0.25f),
+                                fontSize = 10.sp
+                            )
+                        }
+                    },
+                    onClick = {},
+                    enabled = false
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun SectionTitle(
+    title: String,
+    subtitle: String
+) {
+    Column {
+        Text(
+            text = title,
+            color = Color.White,
+            fontSize = 17.sp,
+            fontWeight = FontWeight.Black
+        )
+
+        Spacer(modifier = Modifier.height(2.dp))
+
+        Text(
+            text = subtitle,
+            color = Color.White.copy(alpha = 0.50f),
+            fontSize = 12.sp
+        )
+    }
 }
 
 @Composable
@@ -492,111 +427,79 @@ private fun HomeTile(
     modifier: Modifier,
     title: String,
     subtitle: String,
-    icon: String = "",
-    iconRes: Int? = null,
+    iconRes: Int,
     accent: Color,
-    height: androidx.compose.ui.unit.Dp,
     onClick: () -> Unit
 ) {
-    val shape = RoundedCornerShape(28.dp)
+    val shape = RoundedCornerShape(22.dp)
 
-    Box(
+    Row(
         modifier = modifier
-            .height(height)
+            .height(112.dp)
             .clip(shape)
-            .clickable { onClick() }
             .background(
-                Brush.verticalGradient(
+                Brush.horizontalGradient(
                     listOf(
-                        Color(0xE625344A),
-                        Color(0xD91A273A)
+                        PanelDark,
+                        PanelDark2
                     )
                 )
             )
             .border(
-                width = 1.3.dp,
-                color = accent.copy(alpha = 1f),
-                shape = shape
+                1.dp,
+                Color.White.copy(alpha = 0.09f),
+                shape
             )
-            .padding(17.dp)
+            .clickable { onClick() }
+            .padding(horizontal = 15.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
+
         Box(
             modifier = Modifier
-                .align(Alignment.TopCenter)
-                .fillMaxWidth(0.76f)
-                .height(2.dp)
-                .background(
-                    Brush.horizontalGradient(
-                        listOf(
-                            Color.Transparent,
-                            accent,
-                            Color.Transparent
-                        )
-                    )
-                )
-        )
-
-        Box(
-            modifier = Modifier.fillMaxSize()
+                .size(64.dp)
+                .clip(RoundedCornerShape(19.dp))
+                .background(accent.copy(alpha = 0.13f))
+                .border(
+                    1.dp,
+                    accent.copy(alpha = 0.32f),
+                    RoundedCornerShape(19.dp)
+                ),
+            contentAlignment = Alignment.Center
         ) {
-            if (iconRes != null) {
-                Image(
-                    painter = painterResource(iconRes),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .align(Alignment.CenterStart)
-                        .size(82.dp),
-                    contentScale = ContentScale.Fit
-                )
-            } else {
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.CenterStart)
-                        .size(62.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = icon,
-                        color = accent,
-                        fontSize = if (icon == "▮▮▮") 22.sp else 30.sp,
-                        fontWeight = FontWeight.Black
-                    )
-                }
-            }
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.CenterStart)
-                    .padding(
-                        start = 98.dp,
-                        end = 54.dp
-                    )
-            ) {
-                Text(
-                    text = title,
-                    color = Color.White,
-                    fontSize = 18.sp,
-                    lineHeight = 21.sp,
-                    fontWeight = FontWeight.Black
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = subtitle,
-                    color = Color.White.copy(alpha = 0.84f),
-                    fontSize = 12.sp,
-                    lineHeight = 16.sp
-                )
-            }
-
-            Box(
-                modifier = Modifier.align(Alignment.CenterEnd)
-            ) {
-                ArrowChip(accent = accent)
-            }
+            Image(
+                painter = painterResource(iconRes),
+                contentDescription = null,
+                modifier = Modifier.size(48.dp),
+                contentScale = ContentScale.Fit
+            )
         }
+
+        Spacer(modifier = Modifier.width(15.dp))
+
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(
+                text = title,
+                color = Color.White,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Black
+            )
+
+            Spacer(modifier = Modifier.height(5.dp))
+
+            Text(
+                text = subtitle,
+                color = Color.White.copy(alpha = 0.58f),
+                fontSize = 11.5.sp,
+                lineHeight = 15.sp
+            )
+        }
+
+        Spacer(modifier = Modifier.width(8.dp))
+
+        ArrowChip(accent)
     }
 }
 
@@ -606,193 +509,160 @@ private fun ArrowChip(
 ) {
     Box(
         modifier = Modifier
-            .size(42.dp)
+            .size(34.dp)
             .clip(CircleShape)
-            .background(accent.copy(alpha = 0.28f))
+            .background(accent.copy(alpha = 0.13f))
             .border(
-                width = 1.dp,
-                color = accent.copy(alpha = 0.90f),
-                shape = CircleShape
+                1.dp,
+                accent.copy(alpha = 0.35f),
+                CircleShape
             ),
         contentAlignment = Alignment.Center
     ) {
         Text(
             text = "›",
             color = Color.White,
-            fontSize = 25.sp,
-            fontWeight = FontWeight.Black
+            fontSize = 22.sp,
+            fontWeight = FontWeight.Bold
         )
     }
 }
 
 @Composable
 private fun StartExamButton(
+    isTablet: Boolean,
     onClick: () -> Unit
 ) {
+    val shape = RoundedCornerShape(26.dp)
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(98.dp)
-            .clip(RoundedCornerShape(26.dp))
-            .clickable { onClick() }
+            .height(if (isTablet) 126.dp else 118.dp)
+            .clip(shape)
             .background(
                 Brush.horizontalGradient(
                     listOf(
-                        Color(0xEE111A27),
-                        Color(0xEB182333),
-                        Color(0xEE101824)
+                        Color(0xFF17344C),
+                        Color(0xFF142A3D),
+                        Color(0xFF102231)
                     )
                 )
             )
             .border(
-                width = 1.dp,
-                color = Color.White.copy(alpha = 0.17f),
-                shape = RoundedCornerShape(26.dp)
+                1.2.dp,
+                ExamGreen.copy(alpha = 0.48f),
+                shape
             )
+            .clickable { onClick() }
     ) {
 
-        // Brillo de cristal superior
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(38.dp)
+                .height(3.dp)
                 .align(Alignment.TopCenter)
                 .background(
-                    Brush.verticalGradient(
+                    Brush.horizontalGradient(
                         listOf(
-                            Color.White.copy(alpha = 0.075f),
+                            Color.Transparent,
+                            ExamGreen,
+                            BrandBlue,
                             Color.Transparent
                         )
                     )
                 )
         )
 
-        // Línea de acento premium
-        Box(
+        Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(2.dp)
-                .align(Alignment.TopCenter)
-                .background(
-                    Brush.horizontalGradient(
-                        listOf(
-                            Color(0xFF188DFF),
-                            Color(0xFF35D5E8),
-                            Color(0xFF8B63FF)
-                        )
-                    )
-                )
-        )
-
-        // Insignia 30
-        Box(
-            modifier = Modifier
-                .padding(start = 18.dp)
-                .align(Alignment.CenterStart)
-                .size(62.dp)
-                .clip(RoundedCornerShape(20.dp))
-                .background(
-                    Brush.verticalGradient(
-                        listOf(
-                            Color(0xFF20364F),
-                            Color(0xFF142438)
-                        )
-                    )
-                )
-                .border(
-                    width = 1.2.dp,
-                    color = Color(0xFF31BFFF).copy(alpha = 0.75f),
-                    shape = RoundedCornerShape(20.dp)
-                ),
-            contentAlignment = Alignment.Center
+                .fillMaxSize()
+                .padding(horizontal = 18.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
+
+            Box(
+                modifier = Modifier
+                    .size(if (isTablet) 76.dp else 68.dp)
+                    .clip(RoundedCornerShape(22.dp))
+                    .background(ExamGreen.copy(alpha = 0.14f))
+                    .border(
+                        1.dp,
+                        ExamGreen.copy(alpha = 0.5f),
+                        RoundedCornerShape(22.dp)
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "30",
+                        color = Color.White,
+                        fontSize = 25.sp,
+                        fontWeight = FontWeight.Black
+                    )
+
+                    Text(
+                        text = "PREG.",
+                        color = ExamGreen,
+                        fontSize = 8.sp,
+                        fontWeight = FontWeight.Black
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.width(16.dp))
+
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = "30",
+                    text = "SIMULACIÓN DE EXAMEN",
                     color = Color.White,
-                    fontSize = 23.sp,
+                    fontSize = if (isTablet) 20.sp else 17.sp,
                     fontWeight = FontWeight.Black
                 )
 
+                Spacer(modifier = Modifier.height(5.dp))
+
                 Text(
-                    text = "PREG.",
-                    color = Color(0xFF91DFFF),
-                    fontSize = 8.sp,
+                    text = "30 preguntas · formato examen",
+                    color = Color.White.copy(alpha = 0.62f),
+                    fontSize = 12.sp
+                )
+
+                Spacer(modifier = Modifier.height(6.dp))
+
+                Text(
+                    text = "✓ Contenido DGT / BOE verificado",
+                    color = ExamGreen,
+                    fontSize = 10.5.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Box(
+                modifier = Modifier
+                    .size(42.dp)
+                    .clip(CircleShape)
+                    .background(ExamGreen.copy(alpha = 0.15f))
+                    .border(
+                        1.dp,
+                        ExamGreen.copy(alpha = 0.45f),
+                        CircleShape
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "›",
+                    color = Color.White,
+                    fontSize = 27.sp,
                     fontWeight = FontWeight.Bold
                 )
             }
         }
-
-        // Contenido principal
-        Column(
-            modifier = Modifier
-                .align(Alignment.CenterStart)
-                .padding(start = 96.dp, end = 72.dp),
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = "HACER TEST DE 30 PREGUNTAS",
-                color = Color.White,
-                fontSize = 17.sp,
-                fontWeight = FontWeight.Black
-            )
-
-            Spacer(modifier = Modifier.height(7.dp))
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "✓",
-                    color = Color(0xFF52E6B1),
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Black
-                )
-
-                Spacer(modifier = Modifier.width(5.dp))
-
-                Text(
-                    text = "Preguntas reales DGT + contenido verificado DGT/BOE",
-                    color = Color.White.copy(alpha = 0.72f),
-                    fontSize = 10.5.sp,
-                    fontWeight = FontWeight.Medium,
-                    lineHeight = 13.sp
-                )
-            }
-        }
-
-        // Botón de avance
-        Box(
-            modifier = Modifier
-                .padding(end = 18.dp)
-                .align(Alignment.CenterEnd)
-                .size(44.dp)
-                .clip(CircleShape)
-                .background(
-                    Brush.verticalGradient(
-                        listOf(
-                            Color(0xFF268FFF).copy(alpha = 0.38f),
-                            Color(0xFF735CFF).copy(alpha = 0.25f)
-                        )
-                    )
-                )
-                .border(
-                    width = 1.dp,
-                    color = Color.White.copy(alpha = 0.22f),
-                    shape = CircleShape
-                ),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = "›",
-                color = Color.White,
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold
-            )
-        }
     }
 }
-

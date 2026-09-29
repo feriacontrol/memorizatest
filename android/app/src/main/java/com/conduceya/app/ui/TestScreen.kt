@@ -1,26 +1,15 @@
 package com.conduceya.app.ui
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -29,19 +18,26 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.conduceya.app.data.QuestionBank
-import com.conduceya.app.data.MistakesStore
 import com.conduceya.app.data.ExamHistoryStore
+import com.conduceya.app.data.MistakesStore
+import com.conduceya.app.data.QuestionBank
 import com.conduceya.app.model.ExamConfig
 import kotlinx.coroutines.delay
 
-private val TestBlue = Color(0xFF0969F6)
+private val TestBlue = Color(0xFF28A9FF)
+private val TestGreen = Color(0xFF37D6AD)
+private val TestRed = Color(0xFFFF6B6B)
+private val TestPanel = Color(0xE6172435)
+private val TestPanelDark = Color(0xE6101927)
 
 @Composable
 fun TestScreen(
@@ -114,11 +110,10 @@ fun TestScreen(
 
             val isFullExam =
                 topic == null &&
-                questionIds == null &&
-                questions.size == ExamConfig.QUESTION_COUNT
+                    questionIds == null &&
+                    questions.size == ExamConfig.QUESTION_COUNT
 
             if (isFullExam && !historySaved) {
-
                 val errors = questions.indices.count { index ->
                     answers.getOrNull(index) !=
                         questions[index].correctAnswer
@@ -195,11 +190,10 @@ fun TestScreen(
 
                 val isFullExam =
                     topic == null &&
-                    questionIds == null &&
-                    questions.size == ExamConfig.QUESTION_COUNT
+                        questionIds == null &&
+                        questions.size == ExamConfig.QUESTION_COUNT
 
                 if (isFullExam && !historySaved) {
-
                     val errors = questions.indices.count { index ->
                         answers.getOrNull(index) !=
                             questions[index].correctAnswer
@@ -224,22 +218,26 @@ fun TestScreen(
     if (questions.isEmpty()) {
         Surface(
             modifier = Modifier.fillMaxSize(),
-            color = Color(0xFFF7F8FA)
+            color = Color(0xFF07111C)
         ) {
             Column(
                 modifier = Modifier.padding(24.dp)
             ) {
                 Text(
                     text = "No hay preguntas disponibles",
+                    color = Color.White,
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                Button(onClick = onBack) {
-                    Text("Volver")
-                }
+                Text(
+                    text = "Volver",
+                    color = TestBlue,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.clickable { onBack() }
+                )
             }
         }
         return
@@ -255,193 +253,310 @@ fun TestScreen(
 
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = Color(0xFFF7F8FA)
+        color = Color(0xFF07111C)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 20.dp, vertical = 28.dp)
+        BoxWithConstraints(
+            modifier = Modifier.fillMaxSize()
         ) {
+            val isTablet = maxWidth >= 700.dp
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                TextButton(
-                    onClick = onBack
-                ) {
-                    Text(
-                        text = "‹ Salir",
-                        color = TestBlue
-                    )
-                }
-
-                Text(
-                    text = "%02d:%02d".format(minutes, seconds),
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = if (minutes < 5) {
-                        Color(0xFFC93C3C)
-                    } else {
-                        Color(0xFF111827)
-                    },
-                    modifier = Modifier.padding(top = 12.dp)
-                )
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = when {
-                    questionIds != null -> "Test de mis fallos"
-                    topic != null -> topic
-                    else -> "Test de examen"
-                },
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold
-            )
-
-            Spacer(modifier = Modifier.height(7.dp))
-
-            Text(
-                text = "Pregunta ${questionIndex + 1} de ${questions.size}",
-                fontSize = 14.sp,
-                color = Color(0xFF6B7280)
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Text(
-                text = "$answeredCount de ${questions.size} respondidas",
-                fontSize = 13.sp,
-                color = TestBlue
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Box(
+            Column(
                 modifier = Modifier
+                    .widthIn(max = 920.dp)
                     .fillMaxWidth()
-                    .height(6.dp)
-                    .background(
-                        Color(0xFFE5E7EB),
-                        RoundedCornerShape(10.dp)
+                    .align(Alignment.TopCenter)
+                    .verticalScroll(rememberScrollState())
+                    .padding(
+                        horizontal = if (isTablet) 30.dp else 18.dp,
+                        vertical = if (isTablet) 26.dp else 18.dp
                     )
             ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth(
-                            (questionIndex + 1).toFloat() /
-                                questions.size.toFloat()
-                        )
-                        .height(6.dp)
-                        .background(
-                            TestBlue,
-                            RoundedCornerShape(10.dp)
-                        )
+
+                ExamTopBar(
+                    title = when {
+                        questionIds != null -> "Mis fallos"
+                        topic != null -> topic
+                        else -> "Simulación de examen"
+                    },
+                    minutes = minutes,
+                    seconds = seconds,
+                    lowTime = minutes < 5,
+                    onBack = onBack
                 )
-            }
 
-            Spacer(modifier = Modifier.height(14.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
-            TextButton(
-                onClick = {
-                    showSummary = true
-                }
-            ) {
-                Text(
-                    text = "Ver todas las preguntas",
-                    color = TestBlue,
-                    fontWeight = FontWeight.Bold
-                )
-            }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Column {
+                        Text(
+                            text = "PREGUNTA ${questionIndex + 1}",
+                            color = TestBlue,
+                            fontSize = 11.sp,
+                            letterSpacing = 1.4.sp,
+                            fontWeight = FontWeight.Black
+                        )
 
-            Spacer(modifier = Modifier.height(14.dp))
+                        Spacer(modifier = Modifier.height(3.dp))
 
-            Text(
-                text = question.text,
-                fontSize = 23.sp,
-                fontWeight = FontWeight.Bold,
-                lineHeight = 30.sp
-            )
-
-            Spacer(modifier = Modifier.height(28.dp))
-
-            question.answers.forEachIndexed { index, answer ->
-
-                AnswerButton(
-                    letter = listOf("A", "B", "C")[index],
-                    text = answer,
-                    selected = selectedAnswer == index,
-                    onClick = {
-                        answers[questionIndex] = index
+                        Text(
+                            text = "${questionIndex + 1} de ${questions.size}",
+                            color = Color.White,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Black
+                        )
                     }
+
+                    Column(
+                        horizontalAlignment = Alignment.End
+                    ) {
+                        Text(
+                            text = "$answeredCount/${questions.size}",
+                            color = TestGreen,
+                            fontSize = 17.sp,
+                            fontWeight = FontWeight.Black
+                        )
+
+                        Text(
+                            text = "respondidas",
+                            color = Color.White.copy(alpha = 0.42f),
+                            fontSize = 10.sp
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                ProgressBar(
+                    progress =
+                        (questionIndex + 1).toFloat() /
+                            questions.size.toFloat()
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
-            }
 
-            Spacer(modifier = Modifier.height(20.dp))
-
-            if (questionIndex > 0) {
-                OutlinedButton(
-                    onClick = {
-                        questionIndex--
-                    },
+                Text(
+                    text = "Ver todas las preguntas",
+                    color = TestBlue,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(54.dp),
-                    shape = RoundedCornerShape(16.dp)
-                ) {
-                    Text(
-                        text = "Anterior",
-                        fontWeight = FontWeight.Bold
+                        .clip(RoundedCornerShape(10.dp))
+                        .clickable {
+                            showSummary = true
+                        }
+                        .padding(vertical = 7.dp)
+                )
+
+                Spacer(modifier = Modifier.height(14.dp))
+
+                QuestionCard(
+                    question = question.text,
+                    isTablet = isTablet
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                question.answers.forEachIndexed { index, answer ->
+                    AnswerButton(
+                        letter = listOf("A", "B", "C")[index],
+                        text = answer,
+                        selected = selectedAnswer == index,
+                        onClick = {
+                            answers[questionIndex] = index
+                        }
                     )
+
+                    Spacer(modifier = Modifier.height(11.dp))
                 }
 
                 Spacer(modifier = Modifier.height(10.dp))
-            }
 
-            Button(
-                onClick = {
-                    if (questionIndex < questions.lastIndex) {
-                        questionIndex++
-                    } else {
-                        showSummary = true
-                    }
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(58.dp),
-                shape = RoundedCornerShape(16.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = TestBlue
-                )
-            ) {
-                Text(
-                    text = if (questionIndex < questions.lastIndex) {
-                        "Siguiente"
-                    } else {
-                        "Revisar antes de entregar"
+                NavigationButtons(
+                    canGoBack = questionIndex > 0,
+                    isLast = questionIndex == questions.lastIndex,
+                    onPrevious = {
+                        if (questionIndex > 0) {
+                            questionIndex--
+                        }
                     },
-                    fontSize = 17.sp,
-                    fontWeight = FontWeight.Bold
+                    onNext = {
+                        if (questionIndex < questions.lastIndex) {
+                            questionIndex++
+                        } else {
+                            showSummary = true
+                        }
+                    }
                 )
+
+                if (selectedAnswer == null) {
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Text(
+                        text = "Puedes dejarla sin responder y volver después.",
+                        color = Color.White.copy(alpha = 0.42f),
+                        fontSize = 11.5.sp
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(28.dp))
             }
-
-            if (selectedAnswer == null) {
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = "Puedes dejar esta pregunta sin responder y volver después.",
-                    fontSize = 13.sp,
-                    color = Color(0xFF6B7280)
-                )
-            }
-
-            Spacer(modifier = Modifier.height(25.dp))
         }
+    }
+}
+
+@Composable
+private fun ExamTopBar(
+    title: String,
+    minutes: Int,
+    seconds: Int,
+    lowTime: Boolean,
+    onBack: () -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .clip(CircleShape)
+                .background(Color.White.copy(alpha = 0.06f))
+                .border(
+                    1.dp,
+                    Color.White.copy(alpha = 0.10f),
+                    CircleShape
+                )
+                .clickable { onBack() },
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "‹",
+                color = Color.White,
+                fontSize = 27.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
+
+        Spacer(modifier = Modifier.width(12.dp))
+
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(
+                text = title,
+                color = Color.White,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Black
+            )
+
+            Text(
+                text = "Permiso B",
+                color = Color.White.copy(alpha = 0.40f),
+                fontSize = 10.5.sp
+            )
+        }
+
+        Box(
+            modifier = Modifier
+                .clip(RoundedCornerShape(16.dp))
+                .background(
+                    if (lowTime) {
+                        TestRed.copy(alpha = 0.13f)
+                    } else {
+                        TestBlue.copy(alpha = 0.12f)
+                    }
+                )
+                .border(
+                    1.dp,
+                    if (lowTime) {
+                        TestRed.copy(alpha = 0.42f)
+                    } else {
+                        TestBlue.copy(alpha = 0.32f)
+                    },
+                    RoundedCornerShape(16.dp)
+                )
+                .padding(
+                    horizontal = 14.dp,
+                    vertical = 9.dp
+                )
+        ) {
+            Text(
+                text = "%02d:%02d".format(minutes, seconds),
+                color = if (lowTime) TestRed else Color.White,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Black
+            )
+        }
+    }
+}
+
+@Composable
+private fun ProgressBar(
+    progress: Float
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(7.dp)
+            .clip(RoundedCornerShape(20.dp))
+            .background(Color.White.copy(alpha = 0.07f))
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(progress.coerceIn(0f, 1f))
+                .fillMaxHeight()
+                .background(
+                    Brush.horizontalGradient(
+                        listOf(
+                            TestBlue,
+                            TestGreen
+                        )
+                    )
+                )
+        )
+    }
+}
+
+@Composable
+private fun QuestionCard(
+    question: String,
+    isTablet: Boolean
+) {
+    val shape = RoundedCornerShape(24.dp)
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(shape)
+            .background(
+                Brush.verticalGradient(
+                    listOf(
+                        TestPanel,
+                        TestPanelDark
+                    )
+                )
+            )
+            .border(
+                1.dp,
+                Color.White.copy(alpha = 0.08f),
+                shape
+            )
+            .padding(
+                horizontal = if (isTablet) 24.dp else 18.dp,
+                vertical = if (isTablet) 24.dp else 20.dp
+            )
+    ) {
+        Text(
+            text = question,
+            color = Color.White,
+            fontSize = if (isTablet) 24.sp else 21.sp,
+            lineHeight = if (isTablet) 32.sp else 28.sp,
+            fontWeight = FontWeight.Black
+        )
     }
 }
 
@@ -452,37 +567,165 @@ private fun AnswerButton(
     selected: Boolean,
     onClick: () -> Unit
 ) {
-    OutlinedButton(
-        onClick = onClick,
+    val accent =
+        if (selected) TestBlue
+        else Color.White.copy(alpha = 0.10f)
+
+    val shape = RoundedCornerShape(20.dp)
+
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .heightIn(min = 76.dp),
-        shape = RoundedCornerShape(18.dp),
-        border = BorderStroke(
-            width = if (selected) 2.dp else 1.dp,
-            color =
-                if (selected) TestBlue
-                else Color(0xFFD1D5DB)
-        ),
-        colors = ButtonDefaults.outlinedButtonColors(
-            containerColor =
-                if (selected) TestBlue
-                else Color.White,
-            contentColor =
-                if (selected) Color.White
-                else Color(0xFF111827)
-        )
+            .heightIn(min = 72.dp)
+            .clip(shape)
+            .background(
+                if (selected) {
+                    Brush.horizontalGradient(
+                        listOf(
+                            Color(0xFF163E62),
+                            Color(0xFF122C43)
+                        )
+                    )
+                } else {
+                    Brush.horizontalGradient(
+                        listOf(
+                            Color(0xD9152232),
+                            Color(0xD9101926)
+                        )
+                    )
+                }
+            )
+            .border(
+                width = if (selected) 1.5.dp else 1.dp,
+                color = accent,
+                shape = shape
+            )
+            .clickable { onClick() }
+            .padding(
+                horizontal = 14.dp,
+                vertical = 13.dp
+            ),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
-            text = "$letter   $text",
+
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp),
+                .size(42.dp)
+                .clip(CircleShape)
+                .background(
+                    if (selected) {
+                        TestBlue
+                    } else {
+                        Color.White.copy(alpha = 0.05f)
+                    }
+                )
+                .border(
+                    1.dp,
+                    if (selected) {
+                        TestBlue
+                    } else {
+                        Color.White.copy(alpha = 0.12f)
+                    },
+                    CircleShape
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = letter,
+                color = Color.White,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Black
+            )
+        }
+
+        Spacer(modifier = Modifier.width(14.dp))
+
+        Text(
+            text = text,
+            modifier = Modifier.weight(1f),
+            color = Color.White,
             fontSize = 15.sp,
             lineHeight = 21.sp,
             fontWeight =
                 if (selected) FontWeight.Bold
-                else FontWeight.Normal
+                else FontWeight.Medium
         )
+
+        if (selected) {
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Text(
+                text = "✓",
+                color = TestGreen,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Black
+            )
+        }
+    }
+}
+
+@Composable
+private fun NavigationButtons(
+    canGoBack: Boolean,
+    isLast: Boolean,
+    onPrevious: () -> Unit,
+    onNext: () -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        if (canGoBack) {
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .height(56.dp)
+                    .clip(RoundedCornerShape(18.dp))
+                    .background(Color.White.copy(alpha = 0.05f))
+                    .border(
+                        1.dp,
+                        Color.White.copy(alpha = 0.10f),
+                        RoundedCornerShape(18.dp)
+                    )
+                    .clickable { onPrevious() },
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "Anterior",
+                    color = Color.White,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+
+        Box(
+            modifier = Modifier
+                .weight(if (canGoBack) 1.4f else 1f)
+                .height(56.dp)
+                .clip(RoundedCornerShape(18.dp))
+                .background(
+                    Brush.horizontalGradient(
+                        listOf(
+                            TestBlue,
+                            Color(0xFF347AF5)
+                        )
+                    )
+                )
+                .clickable { onNext() },
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text =
+                    if (isLast) {
+                        "Revisar antes de entregar"
+                    } else {
+                        "Siguiente"
+                    },
+                color = Color.White,
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Black
+            )
+        }
     }
 }
