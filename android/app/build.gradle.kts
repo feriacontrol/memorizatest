@@ -19,8 +19,18 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        create("release") {
+            storeFile = file("../conduceya-release.jks")
+            storePassword = System.getenv("CONDUCEYA_STORE_PASSWORD")
+            keyAlias = "conduceya"
+            keyPassword = System.getenv("CONDUCEYA_KEY_PASSWORD")
+        }
+    }
+
     buildTypes {
         release {
+            signingConfig = signingConfigs.getByName("release")
             optimization {
                 enable = false
             }
