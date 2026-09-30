@@ -4,13 +4,13 @@ plugins {
 }
 
 android {
-    namespace = "com.conduceya.app"
+    namespace = "com.memorizatest.app"
     compileSdk {
         version = release(37)
     }
 
     defaultConfig {
-        applicationId = "com.conduceya.app"
+        applicationId = "com.memorizatest.app"
         minSdk = 24
         targetSdk = 37
         versionCode = 1
