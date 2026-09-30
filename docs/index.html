@@ -4,19 +4,82 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>MemorizaTest</title>
+  <style>
+    body{
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:radial-gradient(circle at top,#1b1240 0%,#090914 45%,#030307 100%);
+      font-family:Arial,Helvetica,sans-serif;
+      color:white;
+    }
+    .card{
+      width:min(92%,720px);
+      padding:40px 28px;
+      border-radius:28px;
+      background:rgba(12,12,28,.88);
+      border:1px solid rgba(92,68,255,.35);
+      box-shadow:0 0 45px rgba(53,89,255,.22),0 0 70px rgba(202,45,255,.10);
+      text-align:center;
+    }
+    img{
+      width:min(100%,420px);
+      height:auto;
+      margin-bottom:20px;
+      filter:drop-shadow(0 0 18px rgba(71,138,255,.45));
+    }
+    h1{
+      font-size:38px;
+      margin:0 0 10px;
+    }
+    p{
+      color:#c9c9d6;
+      font-size:17px;
+      line-height:1.5;
+    }
+    .links{
+      display:grid;
+      gap:14px;
+      margin-top:28px;
+    }
+    a{
+      display:block;
+      padding:15px 18px;
+      border-radius:14px;
+      text-decoration:none;
+      color:white;
+      font-weight:700;
+      background:linear-gradient(90deg,#2563ff,#7b2cff,#d12cff);
+      box-shadow:0 0 18px rgba(86,80,255,.25);
+    }
+    a:hover{
+      transform:translateY(-1px);
+    }
+    .email{
+      margin-top:28px;
+      font-size:15px;
+      color:#9ea0b5;
+    }
+  </style>
 </head>
 <body>
-  <h1>MemorizaTest</h1>
+  <div class="card">
+    <img src="logo_memorizatest.png" alt="MemorizaTest">
+    <h1>MemorizaTest</h1>
+    <p>Información legal y soporte oficial de la aplicación MemorizaTest.</p>
 
-  <p>Información legal y soporte de MemorizaTest.</p>
+    <div class="links">
+      <a href="privacidad.html">Política de privacidad</a>
+      <a href="terminos.html">Términos y condiciones</a>
+      <a href="soporte.html">Soporte</a>
+      <a href="legal.html">Aviso legal</a>
+    </div>
 
-  <ul>
-    <li><a href="privacidad.html">Política de privacidad</a></li>
-    <li><a href="terminos.html">Términos y condiciones</a></li>
-    <li><a href="soporte.html">Soporte</a></li>
-    <li><a href="legal.html">Aviso legal</a></li>
-  </ul>
-
-  <p>Contacto: <strong>soporte.memorizatest@gmail.com</strong></p>
+    <div class="email">
+      soporte.memorizatest@gmail.com
+    </div>
+  </div>
 </body>
 </html>
