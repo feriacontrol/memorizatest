@@ -85,7 +85,12 @@ fun TestScreen(
     fun finishTestWithAd() {
         showSummary = false
 
-        if (activity != null) {
+        val isFullExam =
+            topic == null &&
+                questionIds == null &&
+                questions.size == ExamConfig.QUESTION_COUNT
+
+        if (isFullExam && activity != null) {
             InterstitialAdManager.show(activity) {
                 finished = true
             }
