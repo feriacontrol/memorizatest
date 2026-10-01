@@ -41,7 +41,8 @@ fun HomeScreen(
     onOpenTopics: () -> Unit,
     onOpenMistakes: () -> Unit,
     onOpenStatistics: () -> Unit,
-    onRemoveAds: () -> Unit
+    onRemoveAds: () -> Unit,
+    onRestorePurchase: () -> Unit
 ) {
     val uriHandler = LocalUriHandler.current
     Box(modifier = Modifier.fillMaxSize()) {
@@ -215,6 +216,15 @@ fun HomeScreen(
                         onClick = onOpenStatistics
                     )
                 }
+
+                Text(
+                    text = "Restaurar compra",
+                    color = BrandBlue,
+                    fontSize = 12.sp,
+                    modifier = Modifier
+                        .clickable { onRestorePurchase() }
+                        .padding(vertical = 10.dp)
+                )
 
                 Text(text = "Legal y privacidad", color = Color.White.copy(alpha = 0.55f), fontSize = 12.sp, modifier = Modifier.clickable { uriHandler.openUri("https://feriacontrol.github.io/memorizatest/") }.padding(vertical = 10.dp))
 

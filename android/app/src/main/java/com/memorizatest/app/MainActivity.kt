@@ -76,6 +76,9 @@ class MainActivity : ComponentActivity() {
                         },
                         onRemoveAds = {
                             BillingManager.purchase(this@MainActivity)
+                        },
+                        onRestorePurchase = {
+                            BillingManager.restorePurchase()
                         }
                     )
 

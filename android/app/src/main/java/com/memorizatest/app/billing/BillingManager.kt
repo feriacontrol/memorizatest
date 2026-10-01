@@ -112,6 +112,12 @@ object BillingManager : PurchasesUpdatedListener {
         }
     }
 
+    fun restorePurchase(
+        onStateChanged: (() -> Unit)? = null
+    ) {
+        queryPurchases(onStateChanged)
+    }
+
     fun purchase(
         activity: Activity
     ) {
