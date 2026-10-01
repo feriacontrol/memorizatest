@@ -1,9 +1,9 @@
 package com.memorizatest.app.ads
 
-import com.memorizatest.app.billing.BillingManager
-
 import android.app.Activity
 import android.content.Context
+import android.content.pm.ApplicationInfo
+import com.memorizatest.app.billing.BillingManager
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
@@ -15,8 +15,22 @@ object InterstitialAdManager {
     private const val TEST_AD_UNIT_ID =
         "ca-app-pub-3940256099942544/1033173712"
 
+    private const val RELEASE_AD_UNIT_ID =
+        "ca-app-pub-2153494472499577/9170093135"
+
     private var interstitialAd: InterstitialAd? = null
     private var loading = false
+
+    private fun adUnitId(context: Context): String {
+        val isDebug =
+            context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0
+
+        return if (isDebug) {
+            TEST_AD_UNIT_ID
+        } else {
+            RELEASE_AD_UNIT_ID
+        }
+    }
 
     fun load(context: Context) {
         if (BillingManager.isPremium()) return
@@ -26,7 +40,7 @@ object InterstitialAdManager {
 
         InterstitialAd.load(
             context,
-            TEST_AD_UNIT_ID,
+            adUnitId(context),
             AdRequest.Builder().build(),
             object : InterstitialAdLoadCallback() {
                 override fun onAdLoaded(ad: InterstitialAd) {
